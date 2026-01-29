@@ -3,6 +3,7 @@ body{
     font-family: "M PLUS Rounded 1c", -apple-system, BlinkMacSystemFont,
     "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol";
+    line-height: 1.5;
 }
 
 .point{
@@ -150,4 +151,356 @@ code[class*="language-"] {
     border-radius: 8px;
     padding: 5px 14px;
     border: 3px solid #b08d02;
+}
+
+.prompt {
+    padding: 0.25em 0.5em;
+    background: transparent;
+    border-left: solid 5px #b5b5b5;
+    color: #737373;
+}
+
+h1 {
+  position: relative;
+  padding-left: 25px;
+  color: #0366d6;
+}
+
+h1:before {
+  position: absolute;
+  content: '';
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 0;
+  border: none;
+  border-left: solid 15px transparent;
+  border-bottom: solid 15px #0366d6;
+}
+h1:after {
+  position: absolute;
+  content: '';
+  bottom: -3px;
+  left: 10px;
+  width: 100%;
+  border-bottom: solid 3px #0366d6;;
+}
+
+h2 {
+  color: #0366d6;/*文字色*/
+  border-bottom: 2px solid #0366d6;;
+}
+
+h3 {
+  color: #0366d6;
+  padding-left: 10px;
+  border-left: 4px solid #0366d6;
+}
+
+section {
+  margin-bottom: 40px;
+}
+
+a {
+    color: #0366d6;
+    border-bottom: dashed 2px #0366d6;
+    text-decoration: none;
+    font-family: "M PLUS Rounded 1c", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
+    font-weight: bold;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+ul li {
+  position: relative;
+  padding: 0 0 0 2em;
+  margin: 0;
+}
+ul li::before {
+  position: absolute;
+  left: 0;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  content: '\f005';
+  color: #0366d6;
+}
+ul li.error::before {
+  content: '\f06a'; 
+  color: #0366d6;
+}
+ul li.drill::before {
+  content: '\f024'; 
+  color: #0366d6;
+}
+
+/* ===== HAMBURGER MENU ===== */
+.openbtn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    z-index: 1001;
+    background: #0366d6;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.openbtn:hover {
+    background: #0256b8;
+}
+
+.openbtn span {
+    display: block;
+    width: 30px;
+    height: 3px;
+    background: white;
+    margin: 4px 0;
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+
+.openbtn.active span:nth-child(1) {
+    transform: translateY(11px) rotate(45deg);
+}
+
+.openbtn.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.openbtn.active span:nth-child(3) {
+    transform: translateY(-11px) rotate(-45deg);
+}
+
+#g-nav {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 300px;
+    height: 100vh;
+    background: #f6f8fa;
+    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    overflow-y: auto;
+    transition: right 0.3s ease;
+}
+
+#g-nav.active {
+    right: 0;
+}
+
+#g-nav-list {
+    padding: 80px 20px 20px;
+}
+
+#g-nav-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+#g-nav-list ul li {
+    padding: 10px 0;
+    margin: 0;
+}
+
+#g-nav-list ul li::before {
+    display: none;
+}
+
+#g-nav-list ul li a {
+    color: #24292e;
+    text-decoration: none;
+    border: none;
+    font-weight: normal;
+    display: block;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+#g-nav-list ul li a:hover {
+    background: #e1e4e8;
+}
+
+#g-nav-list ul ul {
+    padding-left: 20px;
+}
+
+#g-nav-list .toc-section-number {
+    color: #0366d6;
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+/* lecturen.html用のナビゲーションリンクスタイル */
+#g-nav-list ul li a {
+    font-family: "M PLUS Rounded 1c", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+@media screen and (max-width: 1024px) {
+    body {
+        padding: 0px 60px;
+    }
+    
+    .code-container {
+        width: 100%;
+        max-width: 800px;
+    }
+    
+    .output-container {
+        width: 100%;
+        max-width: 800px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    body {
+        padding: 0px 20px;
+    }
+    
+    .code-container {
+        width: 100%;
+        border-radius: 6px;
+    }
+    
+    .output-container {
+        width: 100%;
+        border-radius: 6px;
+    }
+    
+    .code-header {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+    
+    .copy-btn {
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+    
+    .code-block {
+        font-size: 13px;
+        padding: 8px;
+    }
+    
+    .output-block {
+        font-size: 13px;
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 24px;
+        padding-left: 20px;
+    }
+    
+    h1:before {
+        border-left: solid 12px transparent;
+        border-bottom: solid 12px #0366d6;
+    }
+    
+    h2 {
+        font-size: 20px;
+    }
+    
+    .hint {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+    
+    .prompt {
+        padding: 8px;
+        font-size: 14px;
+    }
+    
+    /* ハンバーガーメニューをモバイルで少し小さく */
+    .openbtn {
+        width: 45px;
+        height: 45px;
+        top: 15px;
+        right: 15px;
+    }
+    
+    .openbtn span {
+        width: 25px;
+        height: 2.5px;
+        margin: 3.5px 0;
+    }
+    
+    #g-nav {
+        width: 280px;
+        right: -280px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    body {
+        padding: 0px 15px;
+    }
+    
+    h1 {
+        font-size: 20px;
+        padding-left: 18px;
+    }
+    
+    h2 {
+        font-size: 18px;
+    }
+    
+    .code-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .filename {
+        font-size: 13px;
+    }
+    
+    .copy-btn {
+        align-self: flex-end;
+        width: 100%;
+        max-width: 120px;
+    }
+    
+    .code-block {
+        font-size: 12px;
+        line-height: 1.4;
+    }
+    
+    .output-block {
+        font-size: 12px;
+        line-height: 1.4;
+    }
+    
+    /* モバイルでハンバーガーメニューをさらに調整 */
+    #g-nav {
+        width: 85%;
+        max-width: 300px;
+        right: -85%;
+    }
+    
+    #g-nav-list {
+        padding: 70px 15px 15px;
+    }
+    
+    #g-nav-list ul li a {
+        font-size: 14px;
+        padding: 10px 8px;
+    }
+    
+    #g-nav-list ul ul {
+        padding-left: 15px;
+    }
 }

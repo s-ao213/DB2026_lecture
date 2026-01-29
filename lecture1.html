@@ -9,6 +9,8 @@
         rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c"
     />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
 <!-- Prism core -->
 <link
     href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.css"
@@ -26,6 +28,42 @@
 <script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.min.js"></script>
 </head>
 <body>
+    <!-- ハンバーガーメニュー -->
+    <div class="openbtn"><span></span><span></span><span></span></div>
+    <nav id="g-nav">
+        <div id="g-nav-list">
+            <ul>
+                <li><a href="#1st">1 本講義の内容</a></li>
+                <li><a href="#2nd">2 準備と復習</a>
+                    <ul>
+                        <li><a href="#2.2">2.2 GROUP BY について（復習）</a></li>
+                    </ul>
+                </li>
+                <li><a href="#3rd">3 GROUP BYの問題点とウィンドウ関数</a></li>
+                <li><a href="#4th">4 PARTITION BY</a>
+                    <ul>
+                        <li><a href="#4.1">4.1 基本的な使い方</a></li>
+                        <li><a href="#4.2">4.2 累積集計</a></li>
+                        <li><a href="#4.3">4.3 移動平均</a></li>
+                    </ul>
+                </li>
+                <li><a href="#5th">5 ROW_NUMBER と RANK</a>
+                    <ul>
+                        <li><a href="#5.1">5.1 ROW_NUMBER</a></li>
+                        <li><a href="#5.2">5.2 RANKとDENSE_RANK</a></li>
+                    </ul>
+                </li>
+                <li><a href="#6th">6 GROUPING による集計</a>
+                    <ul>
+                        <li><a href="#6.2">6.2 GROUPING SETS</a></li>
+                        <li><a href="#6.3">6.3 ROLLUP</a></li>
+                        <li><a href="#6.4">6.4 CUBE</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
     <!-- コピーボタン -->
     <script>
     function copySQL(button) {
@@ -48,29 +86,29 @@
     </script>
 
 
-    <section>
+    <section id="1st">
         <h1>1 &nbsp; 本講義の内容</h1>
         <p>
-            これまでの講義では、<code class="code">GROUP BY</code> を使った集約処理や、<code class="code">HAVING</code> を使った集約結果のフィルタリングを学びました。今回は、さらに高度な集計処理を行うための<span class="point">ウィンドウ関数</span> について学びます。ウィンドウ関数を使うと、<span class="point">各行を保持したまま集計やランク付けを行う</span> ことができ、<code class="code">GROUP BY</code> では実現困難だった処理を簡潔に記述できます。
+            &emsp; これまでの講義では、<code class="code">GROUP BY</code> を使った集約処理や、<code class="code">HAVING</code> を使った集約結果のフィルタリングを学びました。今回は、さらに高度な集計処理を行うための<span class="point">ウィンドウ関数</span> について学びます。ウィンドウ関数を使うと、<span class="point">各行を保持したまま集計やランク付けを行う</span> ことができ、<code class="code">GROUP BY</code> では実現困難だった処理を簡潔に記述できます。
             <ul>
                 <li>ウィンドウ関数（Window Function / 窓関数）とは、OVER 句と組み合わせて使う特殊な関数群です。</li>
-                <li>代表的なものに、<code class="code">ROW_NUMBER()</code>、<code class="code">RANK()</code>、<code class="code">SUM(...) OVER (...)</code> などがあります。</p></li>
+                <li>代表的なものに、<code class="code">ROW_NUMBER()</code>、<code class="code">RANK()</code>、<code class="code">SUM(...) OVER (...)</code> などがあります。</li>
             </ul>
     </section>
 
-    <section>
+    <section id="2nd">
         <h1>2 &nbsp; 準備と復習</h1>
         <div>
             <h2>2.1 &nbsp; 学習の準備</h2>
             <div>
                 <p>次の手順でSQL演習環境の立ち上げを行ってください。</p>
-                <a class="link" href="https://takeshiwada1980.github.io/DB-2025/lecture04.html#sql演習環境の動作確認-前回復習">SQL演習環境の動作確認</a>@ 第04回講義
+                <a href="https://takeshiwada1980.github.io/DB-2025/lecture04.html#sql演習環境の動作確認-前回復習">SQL演習環境の動作確認</a>@ 第04回講義
             </div>
         </div>
             <h2 id="2.2">2.2 &nbsp; GROUP BY について（復習）</h2>
                 <p>
-                    <a href="https://takeshiwada1980.github.io/DB-2025/lecture05.html#group-by">第05回講義</a>では<code class="code">GROUP BY</code>を使って、<span class="point">指定したカラムをグループ化処理</span>し、各グループに対して集約関数を適用する方法を学びました。
-                    例えば、<code class="code">s_characters</code>テーブルに対して、各<code class="code">job</code>ごとの平均 <span class="point">level</span> を求める行うSQLは以下のようになります。
+                    &emsp;<a href="https://takeshiwada1980.github.io/DB-2025/lecture05.html#group-by">第05回講義</a>では<code class="code">GROUP BY</code>を使って、<span class="point">指定したカラムをグループ化処理</span>し、各グループに対して集約関数を適用する方法を学びました。
+                    例えば、<code class="code">s_characters</code>テーブルに対して、各<code class="code">job</code>ごとの平均レベル を求める行うSQLは以下のようになります。
                 </p>
 
 <!-- ===== CODE CELL ===== -->
@@ -92,7 +130,7 @@ ORDER BY
 
 <!-- ===== OUTPUT CELL ===== -->
 <div class="output-container">
-  <div class="output-header">Output</div>
+  <div class="output-header">出力結果</div>
   <pre class="output-block">
    job   | avg_level 
 ---------+-------------
@@ -106,20 +144,22 @@ ORDER BY
 </div>
     </section>
 
-    <section>
+    <section id="3rd">
         <h1>3 &nbsp; GROUP BYの問題点とウィンドウ関数</h1>
         <p>
-            <code class="code">GROUP BY</code> を使うと、指定したカラムでグループ化し、各グループに対して集約関数を適用できます。しかし、以下のような問題点があります。
+            &emsp;<code class="code">GROUP BY</code> を使うと、指定したカラムでグループ化し、各グループに対して集約関数を適用できます。しかし、以下のような問題点があります。
             <ul>
-                <li><span class="point">詳細行が失われる</span>: グループ化すると、各グループが1行に集約されるため、元の詳細行（各レコード）の情報が失われます。</li>
-                <li><span class="point">ランク付けが難しい</span>: 各グループ内で順位を付けるには、サブクエリや JOIN を使う必要があり、複雑になります。</li>
-                <li><span class="point">移動平均・累積合計が書きづらい</span>: 時系列に沿った累積集計や移動平均を求めるには、複雑なサブクエリが必要です。</li>
+                <li class="error"><span class="point">詳細行が失われる</span>: グループ化すると、各グループが1行に集約されるため、元の詳細行（各レコード）の情報が失われます。</li>
+                <li class="error"><span class="point">ランク付けが難しい</span>: 各グループ内で順位を付けるには、サブクエリや JOIN を使う必要があり、複雑になります。</li>
+                <li class="error"><span class="point">移動平均・累積合計が書きづらい</span>: 時系列に沿った累積集計や移動平均を求めるには、複雑なサブクエリが必要です。</li>
             </ul>
             これらの問題を解決するために、<span class="point">ウィンドウ関数</span> を使います。
         </p>
         <div class="hint">
-            <h3 style="color: #665201;">Window関数とは</h3>
-            <p>ウィンドウ関数は、<code class="code">OVER</code> 句と組み合わせて使用する特殊な関数です。<code class="code">GROUP BY</code> と異なり、<span class="point">各行を保持したまま、グループ内での集計やランク付けを行う</span> ことができます。</p>
+            <h3 style="color: #665201;"><i style="color:#665201;" class="fa-solid fa-code"></i>&ensp;Window関数とは</h3>
+            <p>
+                &emsp;Window関数は、<code class="code">OVER</code> 句と組み合わせて使用する特殊な関数です。<code class="code">GROUP BY</code> と異なり、<span class="point">各行を保持したまま、グループ内での集計やランク付けを行う</span> ことができます。
+            </p>
         </div>
 
         <div>
@@ -128,14 +168,14 @@ ORDER BY
         </div>
     </section>
 
-    <section>
+    <section id="4th">
         <h1>4&nbsp; PARTITION BY</h1>
         <p>
-        <code class="code">PARTITION BY</code> は、ウィンドウ関数において「グループ分け」を行うためのキーワードです。<code class="code">GROUP BY</code> と似ていますが<span class="point">、行を圧縮せず、各行にグループ内での集計値やランクを付与できる</span> 点が異なります。
+            &emsp;<code class="code">PARTITION BY</code> は、ウィンドウ関数において「グループ分け」を行うためのキーワードです。<code class="code">GROUP BY</code> と似ていますが<span class="point">、行を圧縮せず、各行にグループ内での集計値やランクを付与できる点</span> が異なります。
         </p>
-        <h2>4.1 &nbsp; 基本的な使い方</h2>
+        <h2 id="4.1">4.1 &nbsp; 基本的な使い方</h2>
         <p>
-            <code>job</code> ごとの平均レベルを各キャラクター行に表示したい場合を考えます。
+            <code class="code">job</code> ごとの平均レベルを各キャラクター行に表示したい場合を考えます。
         </p>
         <div class="code-container">
             <div class="code-header">
@@ -161,9 +201,8 @@ ORDER BY
 
 </code></pre>
 </div>
-            <p>実行結果は次のようになります。</p>
-            <div class="output-container">
-  <div class="output-header">Output</div>
+<div class="output-container">
+  <div class="output-header">実行結果</div>
   <pre class="output-block">
   name   |   job   | level | avg_level 
 ---------+---------+-------+-----------
@@ -194,9 +233,9 @@ ORDER BY
                 &emsp;<a href="#2.2"><code class="code">GROUP BY</code> を用いた集計</a>とは異なり、元のデータの行数は変わらず、<span class="point">各キャラクターの <code>name</code> や<code>level</code> といった情報を保持したまま、「自分が属する職業の平均値」を各行に付加できる</span> 点が特徴です。このように、<code class="code">PARTITION BY</code> は<span class="point">各行ごとにグループ内の情報を比較したい場合</span> に適しています。
             </p>
 
-        <h2>4.2 &nbsp; 累積集計</h2>
+        <h2 id="4.2">4.2 &nbsp; 累積集計</h2>
         <p>
-            <code class="code">ORDER BY</code> を <code class="code">OVER</code> 句に追加すると、累積合計や累積平均を求めることができます。例えば<code class="code">x_characters</code>テーブルについて、キャラクターが作成された順に並べて、その時点までに作成されたキャラクターの平均レベルを各行に表示するSQLは以下のようになります。
+            &emsp;<code class="code">ORDER BY</code> を <code class="code">OVER</code> 句に追加すると、累積合計や累積平均を求めることができます。例えば<code class="code">x_characters</code>テーブルについて、キャラクターが作成された順に並べて、その時点までに作成されたキャラクターの平均レベルを各行に表示するSQLは以下のようになります。
         </p>
 <div class="code-container">
     <div class="code-header">
@@ -220,9 +259,8 @@ ORDER BY
   created_at;
 </code></pre>
 </div>
-            <p>実行結果は次のようになります。</p>
-            <div class="output-container">
-  <div class="output-header">Output</div>
+<div class="output-container">
+  <div class="output-header">実行結果</div>
   <pre class="output-block">
 character_id |  name   | level |     created_at      | cumulative_avg_level 
 -------------+---------+-------+---------------------+----------------------
@@ -248,11 +286,11 @@ character_id |  name   | level |     created_at      | cumulative_avg_level
         <p>
             &ensp;<code class="code">ORDER BY created_at</code> を<code class="code">OVER</code> 句に指定すると、集計は<span class="point">表の先頭行から現在の行までを対象</span>として行われます。 そのため <code class="code">AVG(level)</code> は、「そのキャラクターが作成された時点までの平均レベル」を表す<span class="point">累積平均</span>になります。特別な範囲指定を書かなくても、<code class="code">ORDER BY</code> を指定するだけで累積集計になる点がポイントです。
             <br>
-            &ensp;このような書き方は、<strong>途中経過の確認</strong>（<span class="point">時間の経過とともに値がどのように変化してきたかを確認したい場合や、ある時点までの平均や合計を、各行ごとに比較したい場合</span>）に使用します。
+            &ensp;このような書き方は、途中経過の確認（<span class="point">時間の経過とともに値がどのように変化してきたかを確認したい場合や、ある時点までの平均や合計を、各行ごとに比較したい場合</span>）に使用します。
         </p>
-        <h2>4.3 &nbsp; 移動平均</h2>
+        <h2 id="4.3">4.3 &nbsp; 移動平均</h2>
         <p>
-            <code class="code">ROWS BETWEEN</code> を使うと、「直前N件」を対象とした移動平均を求めることができます。例えば、キャラクターを作成日時順に並べ、「自分を含む直近3人の平均レべル」を各行に表示するには以下のようなSQLを記述します。
+            &emsp;<code class="code">ROWS BETWEEN</code> を使うと、「直前N件」を対象とした移動平均を求めることができます。例えば、キャラクターを作成日時順に並べ、「自分を含む直近3人の平均レべル」を各行に表示するには以下のようなSQLを記述します。
         </p>
         <div class="code-container">
     <div class="code-header">
@@ -279,9 +317,8 @@ ORDER BY
 
 </code></pre>
 </div>
-        <p>実行結果は次のようになります。</p>
-                    <div class="output-container">
-  <div class="output-header">Output</div>
+<div class="output-container">
+  <div class="output-header">実行結果</div>
   <pre class="output-block">
   name   | level |     created_at      | avg_last_3 
 ---------+-------+---------------------+------------
@@ -309,7 +346,7 @@ ORDER BY
             </p>
         <h2>SQLドリル</h2>
         <ul>
-            <li><code class="code">ex-01_1.sql</code>👉<code class="code">s_characters</code> テーブルと<code class="code">x_jobs</code> テーブルを用いて、職業（<code class="code">job</code>）ごとの平均レベル <code class="code">avg_level_by_job</code> を、各キャラクターの行に表示するSQLを記述せよ。ただし、平均値は小数第2位まで求めること。</p>
+            <li class="drill"><code class="code">ex-01_1.sql</code>👉<code class="code">s_characters</code> テーブルと<code class="code">x_jobs</code> テーブルを用いて、職業（<code class="code">job</code>）ごとの平均レベル <code class="code">avg_level_by_job</code> を、各キャラクターの行に表示するSQLを記述せよ。ただし、平均値は小数第2位まで求めること。</p>
             <div class="output-container">
   <div class="output-header">Output</div>
   <pre class="output-block">
@@ -326,7 +363,7 @@ ORDER BY
 (17 行)</pre>
 </div>
 <br>
-                <li><code class="code">ex-01_2.sql</code>👉<code class="code">x_characters</code>テーブルと <code class="code">x_jobs</code> テーブルを用いて、次の出力結果のように職業ごとに、キャラクターが作成された順での累積平均レベル<code class="code">cumulative_avg_level</code> を表示するSQLを記述せよ。</li>
+                <li class="drill"><code class="code">ex-01_2.sql</code>👉<code class="code">x_characters</code>テーブルと <code class="code">x_jobs</code> テーブルを用いて、次の出力結果のように職業ごとに、キャラクターが作成された順での累積平均レベル<code class="code">cumulative_avg_level</code> を表示するSQLを記述せよ。</li>
                 <ul>
                     条件
                     <li>同じ職業の中で古いキャラクターから順に平均を更新していく</li>
@@ -350,10 +387,10 @@ ORDER BY
 (17 行)</pre>
 </div>
             <br>
-                <li><code class="code">ex-01_3.sql</code>👉<code class="code">x_character_items</code> と <code class="code">x_items</code> テーブルを用いて、各キャラクターが所持しているアイテムの合計金額を、アイテム ID の昇順で累積表示するSQLを記述せよ。</li>
-                <li><code class="code">ex-01_4.sql</code>👉<code class="code">x_guild_characters</code>、<code class="code">x_characters</code>、<code class="code">x_character_items</code>、<code class="code">x_items</code> を用いて、ギルドごとに、アイテム総所持金額の累積合計を求めるSQLを記述せよ。</li>
+                <li class="drill"><code class="code">ex-01_3.sql</code>👉<code class="code">x_character_items</code> と <code class="code">x_items</code> テーブルを用いて、各キャラクターが所持しているアイテムの合計金額を、アイテム ID の昇順で累積表示するSQLを記述せよ。</li>
+                <li class="drill"><code class="code">ex-01_4.sql</code>👉<code class="code">x_guild_characters</code>、<code class="code">x_characters</code>、<code class="code">x_character_items</code>、<code class="code">x_items</code> を用いて、ギルドごとに、アイテム総所持金額の累積合計を求めるSQLを記述せよ。</li>
             </ul>
-            <h2>SQLドリル(EX)</h2>
+            <h2><i class="fa-solid fa-flag"></i> &ensp;SQLドリル(EX)</h2>
             <p>
                 <code class="code">ex-01_5.sql</code>👉キャラクターの成長分析をするために、職業（<code class="code">job</code>）ごとに、キャラクターのレベルがどのように推移してきたかを詳しく確認したいと考えている。そこで、データベースに保存されている<code class="code">x_characters</code> テーブルおよび <code class="code">x_jobs</code> テーブルを用いて、以下の条件を満たすデータを取得するSQLを記述せよ。
 
@@ -383,27 +420,18 @@ ORDER BY
 (8 行)</pre>
 </div>
             </p>
+    </section>
+    <section id="5th">
         <h1>5 &nbsp; ROW_NUMBER と RANK</h1>
         <p>
-            ウィンドウ関数には、ランク付けを行う専用の関数があります。代表的なものが <code class="code">ROW_NUMBER()</code>、<code class="code">RANK()</code>、<code class="code">DENSE_RANK()</code> です。
+            &emsp;ウィンドウ関数には、ランク付けを行う専用の関数があります。代表的なものが <code class="code">ROW_NUMBER()</code>、<code class="code">RANK()</code>、<code class="code">DENSE_RANK()</code> です。
         </p>
-        <h2>5.1 ROW_NUMBER</h2>
+        <h2 id="5.1">5.1 ROW_NUMBER</h2>
         <p>
-            ROW_NUMBER() は、各グループ内で<span class="point">連番</span> を付与します。同値であっても異なる番号が振られます。例えば、各職業ごとに、最新のキャラクターを1人だけ取得するSQLは以下のようになります。
+            &emsp; <code class="code">ROW_NUMBER()</code> は、各グループ内で<span class="point">連番</span> を付与します。同値であっても異なる番号が振られます。例えば、各職業ごとに、最新のキャラクターを1人だけ取得するSQLは以下のようになります。
         </p>
-
-
-
-
-
-
-
-
-
-
-
-        <div class="code-container">
-            <div class="code-header">
+<div class="code-container">
+    <div class="code-header">
         <span class="filename">ROW_NUMBERの使用例</span>
         <button class="copy-btn" onclick="copySQL(this)">Copy</button>
     </div>
@@ -438,9 +466,8 @@ ORDER BY
     job_name;
 </code></pre>
 </div>
-        <p>実行結果は次のようになります。</p>
         <div class="output-container">
-  <div class="output-header">Output</div>
+  <div class="output-header">出力結果</div>
   <pre class="output-block">
  name  | job_name | level |     created_at      
 -------+----------+-------+---------------------
@@ -453,8 +480,7 @@ ORDER BY
 (6 行)</pre>
 </div>
 <p>
-    <code class="code">PARTITION BY job_id</code> を指定すると、職業ごとにデータを区切り、それぞれの職業内で番号付けが行われます。<code class="code">ORDER BY created_at DESC</code> により、各職業内のキャラクターは作成日時の新しい順に並べられます。<code class="code">ROW_NUMBER()</code> は、並び替えられた順序に対して<code class="code">1, 2, 3, …</code> と連番を振ります。その結果、各職業において最も新しく作成されたキャラクターが <code class="code">rn = 1</code> となります。
-    <br>
+    &emsp;<code class="code">PARTITION BY job_id</code> を指定すると、職業ごとにデータを区切り、それぞれの職業内で番号付けが行われます。<code class="code">ORDER BY created_at DESC</code> により、各職業内のキャラクターは作成日時の新しい順に並べられます。<code class="code">ROW_NUMBER()</code> は、並び替えられた順序に対して<code class="code">1, 2, 3, …</code> と連番を振ります。その結果、各職業において最も新しく作成されたキャラクターが <code class="code">rn = 1</code> となります。
     <code class="code">ROW_NUMBER()</code> は、次のような場面で特に有効です。
     <ul>
         <li>各グループごとに 最新のデータだけ を取得したいとき</li>
@@ -462,8 +488,9 @@ ORDER BY
         <li>同点を考慮せず、一意な順位 を付けたいとき</li>
     </ul>
 </p>
-        <h2>5.2 &nbsp; RANKとDENSE_RANK</h2>
+        <h2 id="5.2">5.2 &nbsp; RANKとDENSE_RANK</h2>
         <p>
+            &emsp;<code class="code">RANK()</code> と <code class="code">DENSE_RANK()</code> は、同値に対する順位付けの方法が異なります。
             <ul>
                 <li><code class="code">RANK()</code>: 同値の場合は同順位を付け、次順位は <span class="point">スキップ</span> します（例: 1, 2, 2, 4）。</li>
                 <li><code class="code">DENSE_RANK()</code>: 同値の場合は同順位を付け、次順位は <span class="point">スキップしません</span>（例: 1, 2, 2, 3）。</li>
@@ -492,9 +519,8 @@ ORDER BY
     price DESC;
 </code></pre>
 </div>
-        <p>実行結果は次のようになります。</p>
         <div class="output-container">
-  <div class="output-header">Output</div>
+  <div class="output-header">出力結果</div>
   <pre class="output-block">
        name       | price | RANKの場合 | DENSE_RANKの場合 
 ------------------+-------+------------+------------------
@@ -513,14 +539,14 @@ ORDER BY
 (12 行)</pre>
 </div>
 <p>
-    実行結果を確認すると、価格が同じアイテム（例: <code class="code">Angel Feather</code> と <code class="code">Mega Potion</code>）に対して、<code class="code">RANK()</code> は同じ順位（3位）を付与し、次の順位はスキップして5位となっています。一方、<code class="code">DENSE_RANK()</code> は同じ順位（3位）を付与しますが、次の順位はスキップせず4位となっています。
+    &emsp;実行結果を確認すると、価格が同じアイテム（例: <code class="code">Angel Feather</code> と <code class="code">Mega Potion</code>）に対して、<code class="code">RANK()</code> は同じ順位（3位）を付与し、次の順位はスキップして5位となっています。一方、<code class="code">DENSE_RANK()</code> は同じ順位（3位）を付与しますが、次の順位はスキップせず4位となっています。
 </p>
         <h2>SQLドリル</h2>
         <p>
             <ul>
-                <li><code class="code">ex-02_1.sql</code>👉<code class="code">x_guild_characters</code>テーブルを使って、全キャラクターを<code>level</code> の高い順に並べ、上位5人に順位を付けするSQLを記述せよ。ただし、同じレベルの場合は同順位とし、順位は一意に振ること。また、論理削除（<code class="code">deleted_at IS NOT NULL</code>）は除外する。</li>
-                <li><code class="code">ex-02_2.sql</code>👉<code class="code">x_characters </code>と <code class="code">x_jobs</code>を使って、職業ごとに <code class="code">level</code> の高い順で順位を付け、各職業の上位2人を表示するSQLを記述せよ。同じ<code class="code">level</code>は同順位とし、論理削除は除外する。</li>
-                <li>
+                <li class="drill"><code class="code">ex-02_1.sql</code>👉<code class="code">x_guild_characters</code>テーブルを使って、全キャラクターを<code>level</code> の高い順に並べ、上位5人に順位を付けするSQLを記述せよ。ただし、同じレベルの場合は同順位とし、順位は一意に振ること。また、論理削除（<code class="code">deleted_at IS NOT NULL</code>）は除外する。</li>
+                <li class="drill"><code class="code">ex-02_2.sql</code>👉<code class="code">x_characters </code>と <code class="code">x_jobs</code>を使って、職業ごとに <code class="code">level</code> の高い順で順位を付け、各職業の上位2人を表示するSQLを記述せよ。同じ<code class="code">level</code>は同順位とし、論理削除は除外する。</li>
+                <li class="drill">
                     <code class="code">ex-02_3.sql</code>（EX）👉ゲーム運営チームは、<span class="point">職業ごとに「最近作成されたキャラクターが、どの程度のレベル帯にいるのか」を把握したい</span> と考えている。
                     <br>
                     そこで、<code class="code">x_characters</code>テーブルと<code class="code">x_jobs</code>テーブルを利用し、各職業について最新のキャラクター情報を確認できる SQL を記述せよ。
@@ -530,9 +556,11 @@ ORDER BY
                     なお、職業ごとの順位付けや平均値の計算には、<span class="point">行を集約せずに分析できるウィンドウ関数を適切に用いること</span> とします。</li>
             </ul>
         </p>
+    </section>
+    <section id="6th"> 
         <h1>6 &nbsp; GROUPING による集計</h1>
         <p>
-            <code class="code">GROUPING SETS、ROLLUP、CUBE</code> は、<span class="point">「集計の切り口（軸）」を変えた集計結果を、1つの SQL でまとめて取得するための仕組み</span> です。通常の GROUP BY では、集計の単位は 1 通りしか指定できません。
+            &emsp;<code class="code">GROUPING SETS</code>、<code class="code">ROLLUP</code>、<code class="code">CUBE</code> は、<span class="point">「集計の切り口（軸）」を変えた集計結果を、1つの SQL でまとめて取得するための仕組み</span> です。通常の<code class="code">GROUP BY</code> では、集計の単位は 1 通りしか指定できません。
             <br>
             たとえば、
             <ul>
@@ -548,9 +576,9 @@ ORDER BY
             </ul>
             という特徴があり、分析やレポート向けの SQL を、より簡潔に書けるようになります。
         </p>
-        <h2>6.2 &nbsp; GROUPING SETS</h2>
+        <h2 id="6.2">6.2 &nbsp; GROUPING SETS</h2>
         <p>
-            <code>GROUPING SETS</code>を使うと、複数の<code class="code">GROUP BY</code> を1クエリで実行できます。
+            &emsp;<code class="code">GROUPING SETS</code>を使うと、複数の<code class="code">GROUP BY</code> を1クエリで実行できます。
         </p>
                 <div class="code-container">
     <div class="code-header">
@@ -583,7 +611,7 @@ WHERE
 </code></pre>
 </div>
 <br>
-                <div class="code-container">
+<div class="code-container">
     <div class="code-header">
         <span class="filename">GROUPING SETS を使う場合</span>
         <button class="copy-btn" onclick="copySQL(this)">Copy</button>
@@ -608,7 +636,7 @@ ORDER BY
 </div>
 
         <div class="output-container">
-  <div class="output-header">Output</div>
+  <div class="output-header">出力結果</div>
   <pre class="output-block">
  job_name | avg_level 
 ----------+-----------
@@ -622,7 +650,7 @@ ORDER BY
 (7 行)</pre>
   </div>
   <p>
-    この例では、職業ごとの平均レベルと全キャラクター全体の平均レベルを、1つの SQL 文で同時に取得しています。
+    &emsp;この例では、職業ごとの平均レベルと全キャラクター全体の平均レベルを、1つの SQL 文で同時に取得しています。
     <br>
     通常、<code class="code">GROUP BY</code> を使った集計では、集計の単位（グループ）は 1 種類しか指定できません。そのため、
     <ul>
@@ -631,13 +659,13 @@ ORDER BY
     </ul>
     を求めたい場合、それぞれ別の SQL を実行するか、<code class="code">UNION ALL</code> で結果を結合する必要があります。 <code class="code">GROUPING SETS</code> を使うと、<span class="point">集計の単位を複数まとめて指定することができる</span> ため、これらの集計を 1 回のクエリで行えます。
 </p>
-<h2>6.3 &nbsp; ROLLUP</h2>
+<h2 id="6.3">6.3 &nbsp; ROLLUP</h2>
 <p>
-   &ensp; <code class="code">ROLLUP</code> は、集計結果を<span class="point">「細かい単位 → まとめた単位 → 全体」</span> という順番で、一度に出してくれる仕組みです。
+   &emsp; <code class="code">ROLLUP</code> は、集計結果を<span class="point">「細かい単位 → まとめた単位 → 全体」</span> という順番で、一度に出してくれる仕組みです。
     <br>
-    &ensp;普通の<code>GROUP BY</code> は、「この条件でまとめる」と決めた粒度の集計しかできません。たとえば職業ごとに平均レベルを出す、と指定した場合、職業別の結果だけが返ってきます。全体の平均を知りたければ、別の SQL を書く必要があります。一方で<code class="code">ROLLUP</code> を使うと、まず職業ごとの平均レベルを出し、その結果をさらにまとめて、全キャラクターの平均レベルまで同時に計算してくれます。つまり、<span class="point">「個別の結果を見てから、全体像を確認する」という人間の考え方に近い集計</span> を、1 本の SQL で実現できます。結果には途中段階の「まとめ行」が含まれるため、集計対象の列が NULL になっている行が現れます。 この NULL はデータが欠けているのではなく、<span class="point">「ここからは上の区分をまとめた結果」</span>という合図です。
+    &emsp;普通の<code class="code">GROUP BY</code> は、「この条件でまとめる」と決めた粒度の集計しかできません。たとえば職業ごとに平均レベルを出す、と指定した場合、職業別の結果だけが返ってきます。全体の平均を知りたければ、別の SQL を書く必要があります。一方で<code class="code">ROLLUP</code> を使うと、まず職業ごとの平均レベルを出し、その結果をさらにまとめて、全キャラクターの平均レベルまで同時に計算してくれます。つまり、<span class="point">「個別の結果を見てから、全体像を確認する」という人間の考え方に近い集計</span> を、1 本の SQL で実現できます。結果には途中段階の「まとめ行」が含まれるため、集計対象の列が NULL になっている行が現れます。 この NULL はデータが欠けているのではなく、<span class="point">「ここからは上の区分をまとめた結果」</span>という合図です。
     <br>
-    &ensp;簡単に言えば、<code class="code">ROLLUP</code> は 細かく集計した結果を、段階的にまとめながら表示してくれる<span class="point"><code class="code">GROUP BY</code> の拡張機能</span>だと考えると理解しやすいです。
+    &emsp;簡単に言えば、<code class="code">ROLLUP</code> は 細かく集計した結果を、段階的にまとめながら表示してくれる<span class="point">GROUP BYの拡張機能</span>だと考えると理解しやすいです。
 </p>
                 <div class="code-container">
     <div class="code-header">
@@ -658,9 +686,8 @@ GROUP BY
 ORDER BY
     j.name;</code></pre>
 </div>
-<p>出力は以下のようになります。</p>
         <div class="output-container">
-  <div class="output-header">Output</div>
+  <div class="output-header">出力結果</div>
   <pre class="output-block">
  job_name | avg_level 
 ----------+-----------
@@ -673,8 +700,9 @@ ORDER BY
           |     47.35
 (7 行)</pre>
   </div>
-  <h2>6.3 &nbsp; CUBE</h2>
-  <p><code class="code">CUBE</code> は、すべての組み合わせの集計を行います。<code class="code">GROUP BY CUBE (A,B)</code>は、<code class="code">GROUPING SETS ((A, B), (A), (B), ()) </code> と同等です。</p>
+  <h2 id="6.4">6.4 &nbsp; CUBE</h2>
+  <p>
+    &emsp;<code class="code">CUBE</code> は、すべての組み合わせの集計を行います。<code class="code">GROUP BY CUBE (A,B)</code>は、<code class="code">GROUPING SETS ((A, B), (A), (B), ()) </code> と同等です。</p>
                         <div class="code-container">
     <div class="code-header">
         <span class="filename">CUBEの使用例</span>
@@ -701,9 +729,8 @@ ORDER BY
     g.name;
 </code></pre>
 </div>
-<p>出力は以下のようになります。</p>
         <div class="output-container">
-  <div class="output-header">Output</div>
+  <div class="output-header">出力結果</div>
   <pre class="output-block">
  job_name | guild_name | avg_level 
 ----------+------------+-----------
@@ -730,7 +757,64 @@ ORDER BY
           |            |     52.67
 (21 行)</pre>
   </div>
-  
+  <br>
+  <div class="hint">
+    <h3 style="color: #665201;">集計行のラベル付け</h3>
+        <p>
+            <code class="code">ROLLUP</code> は、職業別集計や全体集計など、<span class="point">複数の集計結果を一度に作成できる便利な機能</span>です。 複数の集計結果を一度に作成できる便利な機能です。しかし、<code class="code">ROLLUP</code> だけを使用した場合、集計行は通常のデータ行と同じ形式で出力されるため、どの行が「職業別の集計」で、どの行が「全体の集計」なのかが結果からは分かりにくくなります。特に、全体集計の行では集計軸となるカラムが<code class="code">NULL</code> になるため、「データが欠けているのか」「集計行なのか」を見分けることが困難になります。
+            <br>
+            この問題を解決するために使われるのが <span class="point">GROUPING関数</span>です。<span class="point">GROUPING関数</span> は、その行が通常のデータ行なのか、それとも <code class="code">ROLLUP</code> によって追加された集計行なのかを判別するための関数であり、集計対象として使われていないカラムに対しては 1、使われている場合は 0 を返します。
+            <br>
+            <code class="code">ROLLUP</code> と <span class="point">GROUPING関数</span> を組み合わせることで、集計行に対して「これは職業別の集計である」「これは全体の集計である」といった意味を明示的に付与することができます。その結果、<code class="code">CASE</code> 式などを用いて集計行にラベルを付けたり、表示名を分かりやすく変更したりすることが可能になります。
+            <br>
+            つまり、<code class="code">ROLLUP</code> は<span class="point">「集計結果を作るための機能」</span>であり、<span class="point">GROUPING関数</span> は<span class="point">「その集計結果の意味を人に伝えるための機能」</span>です。この二つを併用することで、<span class="point">単に数値を計算するだけでなく、その結果を他人が見ても理解しやすい形で提示できる</span>  SQL を書くことができるようになります。
+            <br>
+            このように、<code class="code">GROUPING</code> と <code class="code">ROLLUP</code> を合わせて使う最大のメリットは、<span class="point">集計結果の可読性と実用性を大きく向上させられる点</span>にあります。
+        </p>
+  </div>
+          <div>
+            <p ><strong>(プロンプト例)</strong></p>
+            <p class="prompt">
+                ROLLUP と GROUPING の関係がよく分かりません。なぜ<code class="code">ROLLUP</code> だけでは不十分なのか、<code class="code">GROUPING</code>が「何を判別しているのか」を、<code class="code">NULL</code> が出てくる理由と結びつけて説明してください。
+            </p>
+        </div>
+        <h2>SQLドリル</h2>
+        <ul>
+            <li><code class="code">ex-03_1.sql</code>👉<code class="code">x_characters</code> と <code class="code">x_jobs</code> を用いて、「職業別」「レベル帯別（50未満・50以上）」およびその組み合わせと全体について、キャラクター数を同時に集計するSQLを記述せよ。論理削除は除外すること。</li>
+            <li><code class="code">ex-03_2.sql</code>👉<code class="code">x_characters</code> と <code class="code">x_jobs</code> を用いて、職業ごとに<span class="point">「作成日時順の累積平均レベル」</span> を求めなさい。さらに、その累積平均が 50 以上になった最初のキャラクターだけを表示し、平均値は小数第2位まで求めること。論理削除は除外すること。</li>
+        </ul>
 </section>
+
+<script>
+// ハンバーガーメニューの開閉
+document.addEventListener('DOMContentLoaded', function() {
+    const openBtn = document.querySelector('.openbtn');
+    const gNav = document.getElementById('g-nav');
+    
+    if (openBtn && gNav) {
+        openBtn.addEventListener('click', function() {
+            openBtn.classList.toggle('active');
+            gNav.classList.toggle('active');
+        });
+
+        // メニュー外をクリックしたら閉じる
+        document.addEventListener('click', function(e) {
+            if (!gNav.contains(e.target) && !openBtn.contains(e.target)) {
+                openBtn.classList.remove('active');
+                gNav.classList.remove('active');
+            }
+        });
+
+        // メニュー内のリンクをクリックしたら閉じる
+        const navLinks = gNav.querySelectorAll('a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                openBtn.classList.remove('active');
+                gNav.classList.remove('active');
+            });
+        });
+    }
+});
+</script>
 </body>
 </html>
