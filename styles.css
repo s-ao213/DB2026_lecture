@@ -140,6 +140,7 @@ pre[class*="language-"] {
     font-family: var(--mono-font);
     line-height: 1.3;
     white-space: pre;
+    overflow-x: auto;
 }
 
 

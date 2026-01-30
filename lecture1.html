@@ -386,7 +386,8 @@ ORDER BY
         <h2><i class="fa-solid fa-graduation-cap"></i> &ensp;SQLドリル</h2>
         <ul>
             <li class="drill"><code class="code">ex-01_1.sql</code>👉<code class="code">s_characters</code> テーブルと<code class="code">x_jobs</code> テーブルを用いて、職業（<code class="code">job</code>）ごとの平均レベル <code class="code">avg_level_by_job</code> を、各キャラクターの行に表示するSQLを記述せよ。ただし、平均値は小数第2位まで求めること。</p>
-            <div class="output-container">
+            <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/ex-01_1.sql">模範解答</a>
+<div class="output-container">
   <div class="output-header">Output</div>
   <pre class="output-block">
  character_name | job_name | level | avg_level_by_job 
@@ -408,6 +409,7 @@ ORDER BY
                     <li>論理削除されたキャラクター（<code class="code">deleted_at IS NOT NULL</code>）は除外する</li>
                     <li>平均値は小数第2位まで求めること</li>
                 </ul>
+                <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/ex-01_2.sql">模範解答</a>
                 <div class="output-container">
   <div class="output-header">Output</div>
   <pre class="output-block">
@@ -426,7 +428,9 @@ ORDER BY
 </div>
             <br>
                 <li class="drill"><code class="code">ex-01_3.sql</code>👉<code class="code">x_character_items</code> と <code class="code">x_items</code> テーブルを用いて、各キャラクターが所持しているアイテムの合計金額を、アイテム ID の昇順で累積表示するSQLを記述せよ。</li>
+                <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/ex-01_3.sql">模範解答</a>
                 <li class="drill"><code class="code">ex-01_4.sql</code>👉<code class="code">x_guild_characters</code>、<code class="code">x_characters</code>、<code class="code">x_character_items</code>、<code class="code">x_items</code> を用いて、ギルドごとに、アイテム総所持金額の累積合計を求めるSQLを記述せよ。</li>
+                <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/ex-01_4.sql">模範解答</a>
             </ul>
             <h2><i class="fa-solid fa-graduation-cap"></i> &ensp;SQLドリル(EX)</h2>
             <p>
@@ -441,7 +445,7 @@ ORDER BY
                     <li>結果は、職業名・作成日時の順で並べ、<span class="point">各職業につき 最新の5件までを表示すること</span>。</li>
                     <li>平均値は小数第2位まで求めること。</li>
                 </ul>
-
+                <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/ex-01_5.sql">模範解答</a>
 <div class="output-container">
   <div class="output-header">Output</div>
   <pre class="output-block">
@@ -595,8 +599,16 @@ ORDER BY
         <h2><i class="fa-solid fa-graduation-cap"></i> &ensp;SQLドリル</h2>
         <p>
             <ul>
-                <li class="drill"><code class="code">ex-02_1.sql</code>👉<code class="code">x_guild_characters</code>テーブルを使って、全キャラクターを<code>level</code> の高い順に並べ、上位5人に順位を付けするSQLを記述せよ。ただし、同じレベルの場合は同順位とし、順位は一意に振ること。また、論理削除（<code class="code">deleted_at IS NOT NULL</code>）は除外する。</li>
-                <li class="drill"><code class="code">ex-02_2.sql</code>👉<code class="code">x_characters </code>と <code class="code">x_jobs</code>を使って、職業ごとに <code class="code">level</code> の高い順で順位を付け、各職業の上位2人を表示するSQLを記述せよ。同じ<code class="code">level</code>は同順位とし、論理削除は除外する。</li>
+                <li class="drill">
+                    <code class="code">ex-02_1.sql</code>👉<code class="code">x_guild_characters</code>テーブルを使って、全キャラクターを<code>level</code> の高い順に並べ、上位5人に順位を付けするSQLを記述せよ。ただし、同じレベルの場合は同順位とし、順位は一意に振ること。また、論理削除（<code class="code">deleted_at IS NOT NULL</code>）は除外する。
+                    <br><a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/ex-02_1.sql">模範解答</a>
+                </li>
+                <br>
+                <li class="drill">
+                    <code class="code">ex-02_2.sql</code>👉<code class="code">x_characters </code>と <code class="code">x_jobs</code>を使って、職業ごとに <code class="code">level</code> の高い順で順位を付け、各職業の上位2人を表示するSQLを記述せよ。同じ<code class="code">level</code>は同順位とし、論理削除は除外する。
+                    <br><a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/ex-02_2.sql">模範解答</a>
+                </li>
+                <br>
                 <li class="drill">
                     <code class="code">ex-02_3.sql</code>（EX）👉ゲーム運営チームは、<span class="point">職業ごとに「最近作成されたキャラクターが、どの程度のレベル帯にいるのか」を把握したい</span> と考えている。
                     <br>
@@ -604,8 +616,11 @@ ORDER BY
                     <br>
                     &emsp;具体的には、<code class="code">x_characters</code> と <code class="code">x_jobs</code> を内部結合し、論理削除されている キャラクター（<code class="code">deleted_at IS NOT NULL</code>）は対象外とします。その上で、職業ごとに<code class="code">created_at</code> の新しい順でキャラクターに順位を付け、各職業につき最新の 3 人のみを表示してください。表示結果には、<span class="point">キャラクター名</span>、<span class="point">職業名</span>、<span class="point">キャラクターのレベル</span> に加えて、その<span class="point">キャラクターが属する職業全体の平均レベル</span>も併せて表示するものとします。
                     <br>
-                    なお、職業ごとの順位付けや平均値の計算には、<span class="point">行を集約せずに分析できるウィンドウ関数を適切に用いること</span> とします。</li>
-            </ul>
+                    なお、職業ごとの順位付けや平均値の計算には、<span class="point">行を集約せずに分析できるウィンドウ関数を適切に用いること</span> とします。
+                    <br>
+                    <a href="http://github.com/s-ao213/DB2026_lecture/blob/main/sql/ex-02_3.sql">模範解答</a>
+                </li>
+                </ul>
         </p>
     </section>
     <section id="6th"> 
@@ -850,8 +865,17 @@ ORDER BY
 
         <h2><i class="fa-solid fa-graduation-cap"></i>&ensp;SQLドリル</h2>
         <ul>
-            <li><code class="code">ex-03_1.sql</code>👉<code class="code">x_characters</code> と <code class="code">x_jobs</code> を用いて、「職業別」「レベル帯別（50未満・50以上）」およびその組み合わせと全体について、キャラクター数を同時に集計するSQLを記述せよ。論理削除は除外すること。</li>
-            <li><code class="code">ex-03_2.sql</code>👉<code class="code">x_characters</code> と <code class="code">x_jobs</code> を用いて、職業ごとに<span class="point">「作成日時順の累積平均レベル」</span> を求めなさい。さらに、その累積平均が 50 以上になった最初のキャラクターだけを表示し、平均値は小数第2位まで求めること。論理削除は除外すること。</li>
+            <li>
+                <code class="code">ex-03_1.sql</code>👉<code class="code">x_characters</code> と <code class="code">x_jobs</code> を用いて、「職業別」「レベル帯別（50未満・50以上）」およびその組み合わせと全体について、キャラクター数を同時に集計するSQLを記述せよ。論理削除は除外すること。
+            <br>
+            <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/ex-03_1.sql">模範解答</a>
+            </li>
+            <br>
+            <li>
+                <code class="code">ex-03_2.sql</code>👉<code class="code">x_characters</code> と <code class="code">x_jobs</code> を用いて、職業ごとに<span class="point">「作成日時順の累積平均レベル」</span> を求めなさい。さらに、その累積平均が 50 以上になった最初のキャラクターだけを表示し、平均値は小数第2位まで求めること。論理削除は除外すること。
+            <br>
+            <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/ex-03_2.sql">模範解答</a>
+            </li>
         </ul>
 </section>
 
