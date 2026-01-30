@@ -87,7 +87,7 @@
 
 
     <section id="1st">
-        <h1>1 &nbsp; 本講義の内容</h1>
+        <h1><i class="fa-solid fa-database"></i>&ensp;1 &nbsp; 本講義の内容</h1>
         <p>
             &emsp; これまでの講義では、<code class="code">GROUP BY</code> を使った集約処理や、<code class="code">HAVING</code> を使った集約結果のフィルタリングを学びました。今回は、さらに高度な集計処理を行うための<span class="point">ウィンドウ関数</span> について学びます。ウィンドウ関数を使うと、<span class="point">各行を保持したまま集計やランク付けを行う</span> ことができ、<code class="code">GROUP BY</code> では実現困難だった処理を簡潔に記述できます。
             <ul>
@@ -97,12 +97,23 @@
     </section>
 
     <section id="2nd">
-        <h1>2 &nbsp; 準備と復習</h1>
+        <h1><i class="fa-solid fa-database"></i>&ensp;2 &nbsp; 準備と復習</h1>
         <div>
             <h2>2.1 &nbsp; 学習の準備</h2>
             <div>
                 <p>次の手順でSQL演習環境の立ち上げを行ってください。</p>
                 <a href="https://takeshiwada1980.github.io/DB-2025/lecture04.html#sql演習環境の動作確認-前回復習">SQL演習環境の動作確認</a>@ 第04回講義
+                <p>また、<a href="https://takeshiwada1980.github.io/DB-2025/lecture10.html#準備"> 第10回講義で使用したテーブル群 (x_****)</a> も使用します。演習環境の<code class="code">from-teacher/10/create-x_db.sql</code> および <code class="code">insert-x_db_01.sql </code>を再実行し、次のテーブル群を初期化しておいてください。</p>
+                <ul>
+                    <li>x_items</li>
+                    <li>x_jobs</li>
+                    <li>x_characters</li>
+                    <li>x_guilds</li>
+                    <li>x_guild_characters</li>
+                    <li>x_character_items</li>
+                    <li>x_gold_transfers</li>
+                </ul>
+                <img style="width: 90%;" src="img/er.png" alt="ER図">
             </div>
         </div>
             <h2 id="2.2">2.2 &nbsp; GROUP BY について（復習）</h2>
@@ -145,7 +156,7 @@ ORDER BY
     </section>
 
     <section id="3rd">
-        <h1>3 &nbsp; GROUP BYの問題点とウィンドウ関数</h1>
+        <h1><i class="fa-solid fa-database"></i>&ensp;3 &nbsp; GROUP BYの問題点とウィンドウ関数</h1>
         <p>
             &emsp;<code class="code">GROUP BY</code> を使うと、指定したカラムでグループ化し、各グループに対して集約関数を適用できます。しかし、以下のような問題点があります。
             <ul>
@@ -156,20 +167,20 @@ ORDER BY
             これらの問題を解決するために、<span class="point">ウィンドウ関数</span> を使います。
         </p>
         <div class="hint">
-            <h3 style="color: #665201;"><i style="color:#665201;" class="fa-solid fa-code"></i>&ensp;Window関数とは</h3>
+            <h4 style="color: #665201;"><i style="color:#665201;" class="fa-solid fa-code"></i>&ensp;Window関数とは</h4>
             <p>
-                &emsp;Window関数は、<code class="code">OVER</code> 句と組み合わせて使用する特殊な関数です。<code class="code">GROUP BY</code> と異なり、<span class="point">各行を保持したまま、グループ内での集計やランク付けを行う</span> ことができます。
+                &emsp;ウィンドウ関数は、<code class="code">OVER</code> 句と組み合わせて使用する特殊な関数です。<code class="code">GROUP BY</code> と異なり、<span class="point">各行を保持したまま、グループ内での集計やランク付けを行う</span> ことができます。
             </p>
         </div>
 
         <div>
             <p><strong>(プロンプト例)</strong></p>
-            <p style="color: #737373;">SQL におけるウィンドウ関数とは何ですか？ <code class="code">GROUP BY</code> との違いを具体例を交えて説明してください。</p>
+            <p class="prompt">SQL におけるウィンドウ関数とは何ですか？ <code class="code">GROUP BY</code> との違いを具体例を交えて説明してください。</p>
         </div>
     </section>
 
     <section id="4th">
-        <h1>4&nbsp; PARTITION BY</h1>
+        <h1><i class="fa-solid fa-database"></i>&ensp;4&nbsp; PARTITION BY</h1>
         <p>
             &emsp;<code class="code">PARTITION BY</code> は、ウィンドウ関数において「グループ分け」を行うためのキーワードです。<code class="code">GROUP BY</code> と似ていますが<span class="point">、行を圧縮せず、各行にグループ内での集計値やランクを付与できる点</span> が異なります。
         </p>
@@ -344,7 +355,35 @@ ORDER BY
             <p>
                 <code class="code">ROWS BETWEEN 2 PRECEDING AND CURRENT ROW</code> は、<span class="point">現在の行を含む直前2行</span> を集計対象にする指定です。
             </p>
-        <h2>SQLドリル</h2>
+        <h2><i class="fa-solid fa-square-check"></i>&nbsp;定着確認</h2>
+        <ul>
+            <li>
+                <code class="code">PARTITION BY</code> と <code class="code">GROUP BY</code> の最も大きな違いを一言で述べよ。
+                <br>
+                <span id="test"><input type="checkbox" id="blank1"><label for="blank1"><code class="code">PARTITION BY</code> は行をまとめず、各行に集計結果を付加する。</label></span>
+            </li>
+            <li>
+                「各キャラクター行を残したまま、職業ごとの平均レベルを表示したい」場合、<code class="code">GROUP BY</code> とウィンドウ関数のどちらが適しているか。
+                <br>
+                <span id="test"><input type="checkbox" id="blank2"><label for="blank2">ウィンドウ関数</label></span>
+            </li>
+                <li>
+                    累積集計で「特別な範囲指定（<code class="code">ROWS BETWEEN</code> ）」を書かなくてもよい理由を述べよ。
+                <br>
+                <span id="test"><input type="checkbox" id="blank3"><label for="blank3"><code class="code">ORDER BY</code> を指定すると、暗黙的に先頭から現在行までが対象になるため。</label></span>
+            </li>
+            <li>
+                「直近5件の移動平均」を求めたい場合、ROWS BETWEEN をどのように書くか。
+                <br>
+                <span id="test"><input type="checkbox" id="blank3-2"><label for="blank3-2"><code class="code">ROWS BETWEEN 4 PRECEDING AND CURRENT ROW</code></label></span>
+            </li>
+            <li>
+                累積平均と移動平均の違いを一言で述べよ。
+                <br>
+                <span id="test"><input type="checkbox" id="blank4"><label for="blank4">累積平均は先頭から現在行まで、移動平均は直前N行までを対象とする。</label></span>
+            </li>
+        </ul>
+        <h2><i class="fa-solid fa-graduation-cap"></i> &ensp;SQLドリル</h2>
         <ul>
             <li class="drill"><code class="code">ex-01_1.sql</code>👉<code class="code">s_characters</code> テーブルと<code class="code">x_jobs</code> テーブルを用いて、職業（<code class="code">job</code>）ごとの平均レベル <code class="code">avg_level_by_job</code> を、各キャラクターの行に表示するSQLを記述せよ。ただし、平均値は小数第2位まで求めること。</p>
             <div class="output-container">
@@ -363,9 +402,8 @@ ORDER BY
 (17 行)</pre>
 </div>
 <br>
-                <li class="drill"><code class="code">ex-01_2.sql</code>👉<code class="code">x_characters</code>テーブルと <code class="code">x_jobs</code> テーブルを用いて、次の出力結果のように職業ごとに、キャラクターが作成された順での累積平均レベル<code class="code">cumulative_avg_level</code> を表示するSQLを記述せよ。</li>
+                <li class="drill"><code class="code">ex-01_2.sql</code>👉<code class="code">x_characters</code>テーブルと <code class="code">x_jobs</code> テーブルを用いて、出力結果のように職業ごとに、キャラクターが作成された順での累積平均レベル<code class="code">cumulative_avg_level</code> を表示するSQLを記述せよ。ただし、下記の条件を満たすこと。</li>
                 <ul>
-                    条件
                     <li>同じ職業の中で古いキャラクターから順に平均を更新していく</li>
                     <li>論理削除されたキャラクター（<code class="code">deleted_at IS NOT NULL</code>）は除外する</li>
                     <li>平均値は小数第2位まで求めること</li>
@@ -390,7 +428,7 @@ ORDER BY
                 <li class="drill"><code class="code">ex-01_3.sql</code>👉<code class="code">x_character_items</code> と <code class="code">x_items</code> テーブルを用いて、各キャラクターが所持しているアイテムの合計金額を、アイテム ID の昇順で累積表示するSQLを記述せよ。</li>
                 <li class="drill"><code class="code">ex-01_4.sql</code>👉<code class="code">x_guild_characters</code>、<code class="code">x_characters</code>、<code class="code">x_character_items</code>、<code class="code">x_items</code> を用いて、ギルドごとに、アイテム総所持金額の累積合計を求めるSQLを記述せよ。</li>
             </ul>
-            <h2><i class="fa-solid fa-flag"></i> &ensp;SQLドリル(EX)</h2>
+            <h2><i class="fa-solid fa-graduation-cap"></i> &ensp;SQLドリル(EX)</h2>
             <p>
                 <code class="code">ex-01_5.sql</code>👉キャラクターの成長分析をするために、職業（<code class="code">job</code>）ごとに、キャラクターのレベルがどのように推移してきたかを詳しく確認したいと考えている。そこで、データベースに保存されている<code class="code">x_characters</code> テーブルおよび <code class="code">x_jobs</code> テーブルを用いて、以下の条件を満たすデータを取得するSQLを記述せよ。
 
@@ -422,7 +460,7 @@ ORDER BY
             </p>
     </section>
     <section id="5th">
-        <h1>5 &nbsp; ROW_NUMBER と RANK</h1>
+        <h1 >5 &nbsp; ROW_NUMBER と RANK</h1>
         <p>
             &emsp;ウィンドウ関数には、ランク付けを行う専用の関数があります。代表的なものが <code class="code">ROW_NUMBER()</code>、<code class="code">RANK()</code>、<code class="code">DENSE_RANK()</code> です。
         </p>
@@ -541,7 +579,20 @@ ORDER BY
 <p>
     &emsp;実行結果を確認すると、価格が同じアイテム（例: <code class="code">Angel Feather</code> と <code class="code">Mega Potion</code>）に対して、<code class="code">RANK()</code> は同じ順位（3位）を付与し、次の順位はスキップして5位となっています。一方、<code class="code">DENSE_RANK()</code> は同じ順位（3位）を付与しますが、次の順位はスキップせず4位となっています。
 </p>
-        <h2>SQLドリル</h2>
+        <h2><i class="fa-solid fa-square-check"></i>&nbsp;定着確認</h2>
+        <ul>
+            <li>
+                <code class="code">ROW_NUMBER()</code> と <code class="code">RANK()</code> の違いを同値がある場合に着目して述べよ。
+                <br>
+                <span id="test"><input type="checkbox" id="blank5"><label for="blank5"><code class="code">ROW_NUMBER()</code> は同値でも連番を付与するが、<code class="code">RANK()</code> は同値に同順位を付与する。</label></span>
+            </li>
+            <li>
+                「同じ順位の存在を意味として残したい」場合、<code class="code">ROW_NUMBER()</code> と <code class="code">RANK()</code> のどちらを使うべきか。
+                <br>
+                <span id="test"><input type="checkbox" id="blank6"><label for="blank6"><code class="code">RANK()</code></label></span>
+            </li>
+        </ul>
+        <h2><i class="fa-solid fa-graduation-cap"></i> &ensp;SQLドリル</h2>
         <p>
             <ul>
                 <li class="drill"><code class="code">ex-02_1.sql</code>👉<code class="code">x_guild_characters</code>テーブルを使って、全キャラクターを<code>level</code> の高い順に並べ、上位5人に順位を付けするSQLを記述せよ。ただし、同じレベルの場合は同順位とし、順位は一意に振ること。また、論理削除（<code class="code">deleted_at IS NOT NULL</code>）は除外する。</li>
@@ -551,14 +602,14 @@ ORDER BY
                     <br>
                     そこで、<code class="code">x_characters</code>テーブルと<code class="code">x_jobs</code>テーブルを利用し、各職業について最新のキャラクター情報を確認できる SQL を記述せよ。
                     <br>
-                    具体的には、<code class="code">x_characters</code> と <code class="code">x_jobs</code> を内部結合し、論理削除されている キャラクター（code<code class="code">deleted_at IS NOT NULL</code>）は対象外とします。その上で、職業ごとに<code class="code">created_at</code> の新しい順でキャラクターに順位を付け、各職業につき最新の 3 人のみを表示してください。表示結果には、<span class="point">キャラクター名</span>、<span class="point">職業名</span>、<span class="point">キャラクターのレベル</span> に加えて、その<span class="point">キャラクターが属する職業全体の平均レベル</span>も併せて表示するものとします。
+                    &emsp;具体的には、<code class="code">x_characters</code> と <code class="code">x_jobs</code> を内部結合し、論理削除されている キャラクター（<code class="code">deleted_at IS NOT NULL</code>）は対象外とします。その上で、職業ごとに<code class="code">created_at</code> の新しい順でキャラクターに順位を付け、各職業につき最新の 3 人のみを表示してください。表示結果には、<span class="point">キャラクター名</span>、<span class="point">職業名</span>、<span class="point">キャラクターのレベル</span> に加えて、その<span class="point">キャラクターが属する職業全体の平均レベル</span>も併せて表示するものとします。
                     <br>
                     なお、職業ごとの順位付けや平均値の計算には、<span class="point">行を集約せずに分析できるウィンドウ関数を適切に用いること</span> とします。</li>
             </ul>
         </p>
     </section>
     <section id="6th"> 
-        <h1>6 &nbsp; GROUPING による集計</h1>
+        <h1><i class="fa-solid fa-database"></i>&ensp;6 &nbsp; GROUPING による集計</h1>
         <p>
             &emsp;<code class="code">GROUPING SETS</code>、<code class="code">ROLLUP</code>、<code class="code">CUBE</code> は、<span class="point">「集計の切り口（軸）」を変えた集計結果を、1つの SQL でまとめて取得するための仕組み</span> です。通常の<code class="code">GROUP BY</code> では、集計の単位は 1 通りしか指定できません。
             <br>
@@ -761,15 +812,15 @@ ORDER BY
   <div class="hint">
     <h3 style="color: #665201;">集計行のラベル付け</h3>
         <p>
-            <code class="code">ROLLUP</code> は、職業別集計や全体集計など、<span class="point">複数の集計結果を一度に作成できる便利な機能</span>です。 複数の集計結果を一度に作成できる便利な機能です。しかし、<code class="code">ROLLUP</code> だけを使用した場合、集計行は通常のデータ行と同じ形式で出力されるため、どの行が「職業別の集計」で、どの行が「全体の集計」なのかが結果からは分かりにくくなります。特に、全体集計の行では集計軸となるカラムが<code class="code">NULL</code> になるため、「データが欠けているのか」「集計行なのか」を見分けることが困難になります。
+            &emsp;<code class="code">ROLLUP</code> は、職業別集計や全体集計など、<span class="point">複数の集計結果を一度に作成できる便利な機能</span>です。 複数の集計結果を一度に作成できる便利な機能です。しかし、<code class="code">ROLLUP</code> だけを使用した場合、集計行は通常のデータ行と同じ形式で出力されるため、どの行が「職業別の集計」で、どの行が「全体の集計」なのかが結果からは分かりにくくなります。特に、全体集計の行では集計軸となるカラムが<code class="code">NULL</code> になるため、「データが欠けているのか」「集計行なのか」を見分けることが困難になります。
             <br>
-            この問題を解決するために使われるのが <span class="point">GROUPING関数</span>です。<span class="point">GROUPING関数</span> は、その行が通常のデータ行なのか、それとも <code class="code">ROLLUP</code> によって追加された集計行なのかを判別するための関数であり、集計対象として使われていないカラムに対しては 1、使われている場合は 0 を返します。
+            &emsp;この問題を解決するために使われるのが <span class="point">GROUPING関数</span>です。<span class="point">GROUPING関数</span> は、その行が通常のデータ行なのか、それとも <code class="code">ROLLUP</code> によって追加された集計行なのかを判別するための関数であり、集計対象として使われていないカラムに対しては 1、使われている場合は 0 を返します。
             <br>
-            <code class="code">ROLLUP</code> と <span class="point">GROUPING関数</span> を組み合わせることで、集計行に対して「これは職業別の集計である」「これは全体の集計である」といった意味を明示的に付与することができます。その結果、<code class="code">CASE</code> 式などを用いて集計行にラベルを付けたり、表示名を分かりやすく変更したりすることが可能になります。
+            &emsp;<code class="code">ROLLUP</code> と <span class="point">GROUPING関数</span> を組み合わせることで、集計行に対して「これは職業別の集計である」「これは全体の集計である」といった意味を明示的に付与することができます。その結果、<code class="code">CASE</code> 式などを用いて集計行にラベルを付けたり、表示名を分かりやすく変更したりすることが可能になります。
             <br>
-            つまり、<code class="code">ROLLUP</code> は<span class="point">「集計結果を作るための機能」</span>であり、<span class="point">GROUPING関数</span> は<span class="point">「その集計結果の意味を人に伝えるための機能」</span>です。この二つを併用することで、<span class="point">単に数値を計算するだけでなく、その結果を他人が見ても理解しやすい形で提示できる</span>  SQL を書くことができるようになります。
+            &emsp;つまり、<code class="code">ROLLUP</code> は<span class="point">「集計結果を作るための機能」</span>であり、<span class="point">GROUPING関数</span> は<span class="point">「その集計結果の意味を人に伝えるための機能」</span>です。この二つを併用することで、<span class="point">単に数値を計算するだけでなく、その結果を他人が見ても理解しやすい形で提示できる</span>  SQL を書くことができるようになります。
             <br>
-            このように、<code class="code">GROUPING</code> と <code class="code">ROLLUP</code> を合わせて使う最大のメリットは、<span class="point">集計結果の可読性と実用性を大きく向上させられる点</span>にあります。
+            &emsp;このように、<code class="code">GROUPING</code> と <code class="code">ROLLUP</code> を合わせて使う最大のメリットは、<span class="point">集計結果の可読性と実用性を大きく向上させられる点</span>にあります。
         </p>
   </div>
           <div>
@@ -778,7 +829,26 @@ ORDER BY
                 ROLLUP と GROUPING の関係がよく分かりません。なぜ<code class="code">ROLLUP</code> だけでは不十分なのか、<code class="code">GROUPING</code>が「何を判別しているのか」を、<code class="code">NULL</code> が出てくる理由と結びつけて説明してください。
             </p>
         </div>
-        <h2>SQLドリル</h2>
+        <h2>定着確認</h2>
+        <ul>
+            <li>
+                <code class="code">ROLLUP</code> と <code class="code">CUBE</code> の集計範囲の違いを説明しなさい。
+                <br>
+                <span id="test"><input type="checkbox" id="blank7"><label for="blank7"><code class="code">ROLLUP</code> は階層的集計のみ、<code class="code">CUBE</code> は全組み合わせの集計を行う。</label></span>
+            </li>
+            <li>
+                <code class="code">ROLLUP</code> の結果で <code class="code">NULL</code> が出る行を、そのまま表示すると問題になる理由を述べなさい。
+                <br>
+                <span id="test"><input type="checkbox" id="blank8"><label for="blank8">欠損データと集計行の区別がつかなくなるため。</label></span>
+            </li>
+            <li>
+                <code class="code">GROUPING</code> 関数と <code class="code">CASE</code> 式を組み合わせる目的を説明しなさい。
+                <br>
+                <span id="test"><input type="checkbox" id="blank9"><label for="blank9">集計行の意味を明示的なラベルとして表示するため。</label></span>
+            </li>
+        </ul>
+
+        <h2><i class="fa-solid fa-graduation-cap"></i>&ensp;SQLドリル</h2>
         <ul>
             <li><code class="code">ex-03_1.sql</code>👉<code class="code">x_characters</code> と <code class="code">x_jobs</code> を用いて、「職業別」「レベル帯別（50未満・50以上）」およびその組み合わせと全体について、キャラクター数を同時に集計するSQLを記述せよ。論理削除は除外すること。</li>
             <li><code class="code">ex-03_2.sql</code>👉<code class="code">x_characters</code> と <code class="code">x_jobs</code> を用いて、職業ごとに<span class="point">「作成日時順の累積平均レベル」</span> を求めなさい。さらに、その累積平均が 50 以上になった最初のキャラクターだけを表示し、平均値は小数第2位まで求めること。論理削除は除外すること。</li>
@@ -816,5 +886,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<p>制作時間: 17時間</p>
 </body>
 </html>
