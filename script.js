@@ -27,3 +27,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+window.MathJax = {
+  tex: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']]
+  }
+};
