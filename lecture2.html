@@ -1,1 +1,358 @@
-<p>作ってます</p>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>インデックス設計と探索コスト（フルバージョン）</title>
+<link rel="stylesheet" href="styles.css">
+    <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c"
+    />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+<!-- Prism core -->
+<link
+    href="https://cdn.jsdelivr.net/npm/prismjs/themes/prism.css"
+    rel="stylesheet"
+/>
+
+<!-- line numbers CSS -->
+<link
+    href="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.css"
+    rel="stylesheet"
+/>
+
+<script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/components/prism-sql.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs/plugins/line-numbers/prism-line-numbers.min.js"></script>
+</head>
+<body>
+    <!-- ハンバーガーメニュー -->
+    <div class="openbtn"><span></span><span></span><span></span></div>
+    <nav id="g-nav">
+        <div id="g-nav-list">
+            <ul>
+                <li><a href="#1st">1 本講義の内容</a></li>
+                <li><a href="#2nd">2 準備と復習</a>
+                    <ul>
+                        <li><a href="#2.1">2.1 学修の準備</a></li>
+                    </ul>
+                </li>
+                <li><a href="#3rd">3 インデックス（INDEX）とは</a>
+                    <ul>
+                        <li><a href="#3.1">3.1 インデックスの作成</a></li>
+                        <li><a href="#3.2">3.2 インデックスの利用場面</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="#4th">4 B-treeと探索コスト</a>
+                    <ul>
+                        <li><a href="#4.1">4.1 B-treeとは</a></li>
+                        <li><a href="#4.2">4.2 B-treeによる探索の仕組み</a></li>
+                        <li><a href="#4.3">4.3 探索コストの計算</a></li>
+                        <li><a href="#4.4">4.4 非SARGable(Search Argument Able)</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- コピーボタン -->
+    <script>
+    function copySQL(button) {
+        // このボタンが属する code-container を取得
+        const container = button.closest('.code-container');
+        const code = container.querySelector('code').innerText;
+
+        navigator.clipboard.writeText(code).then(() => {
+            button.textContent = "Copied";
+            button.disabled = true;
+            button.classList.add("copied");
+
+            setTimeout(() => {
+                button.textContent = "Copy";
+                button.disabled = false;
+                button.classList.remove("copied");
+            }, 2000);
+        });
+    }
+    </script>
+
+<section id="1st">
+    <h1><i class="fa-solid fa-database"></i>&ensp;1 &nbsp; 本講義の内容</h1>
+        <p>
+            &emsp;これまでの講義では、<code class="code">WHERE</code> 句や <code class="code">JOIN</code> を用いたデータ検索を中心に SQL を学習してきました。しかしデータ量が増加すると、正しい SQL を記述していても処理が遅くなるという問題が発生します。この問題を解決するための代表的な仕組みが <span class="point">インデックス (INDEX) </span>です。本講義では、以下について学びます。        </p>
+            <ul>
+                <li>インデックスとは何か</li>
+                <li>B-tree 構造による検索の仕組み</li>
+                <li>インデックス有無による探索コストの違い</li>
+                <li>実務を意識したインデックス設計の考え方</li> 
+            </ul>
+</section>
+    <section id="2nd">
+        <h1><i class="fa-solid fa-database"></i>&ensp;2 &nbsp; 準備と復習</h1>
+        <div>
+            <h2 id="2.1">2.1 &nbsp; 学習の準備</h2>
+            <div>
+                <p>&emsp;次の手順でSQL演習環境の立ち上げを行ってください。</p>
+                <a href="https://takeshiwada1980.github.io/DB-2025/lecture04.html#sql演習環境の動作確認-前回復習">SQL演習環境の動作確認</a>@ 第04回講義
+                <p>&emsp;また、<a href="https://takeshiwada1980.github.io/DB-2025/lecture10.html#準備"> 第10回講義で使用したテーブル群 (x_****)</a> も使用します。演習環境の<code class="code">from-teacher/10/create-x_db.sql</code> および <code class="code">insert-x_db_01.sql </code>を再実行し、次のテーブル群を初期化しておいてください。</p>
+                <ul>
+                    <li>x_items</li>
+                    <li>x_jobs</li>
+                    <li>x_characters</li>
+                    <li>x_guilds</li>
+                    <li>x_guild_characters</li>
+                    <li>x_character_items</li>
+                    <li>x_gold_transfers</li>
+                </ul>
+                <img style="width: 90%;" src="img/er.png" alt="ER図">
+            </div>
+        </div>
+</section>
+<section id="3rd">
+    <h1><i class="fa-solid fa-database"></i>&ensp;3 &nbsp; インデックス (INDEX) とは</h1>
+    <div>
+        <p>
+            &emsp;データベースに保存されたデータは、見た目には表形式で整理されていますが、内部では単なる大量の行データとして管理されています。そのため、検索条件を指定してデータを取得する場合、何も工夫をしなければ、先頭から順番に行を確認していく処理が行われます。この処理方法を <span class="point">フルテーブルスキャン</span> と呼びます。
+            <br>
+            &emsp;例えば、<code class="code">x_characters</code>から<code class="point">Alice</code>という名前のキャラクターを探すとき、つぎのようなSQLを実行します。        </p>
+
+<div class="code-container">
+    <div class="code-header">
+        <span class="filename">Aliceを探すSQL</span>
+        <button class="copy-btn"  onclick="copySQL(this)">Copy</button>
+    </div>
+<pre class="code-block line-numbers"><code class="language-sql">SELECT
+  *
+FROM
+  x_characters
+WHERE
+  name = 'Alice';</code></pre>
+</div>
+    <p>
+        &emsp;インデックスがない場合、データベースでは、<code class="code">x_characters</code>テーブルの先頭行から順番に<code class="code">name</code>列の値を確認し、<code class="point">Alice</code>と一致する行を探します。これは<span class="point">索引のない分厚い名簿から、特定の名前を探す作業</span>と同じです。ページ数が少なければ、すぐに見つかるかもしれませんが、データが数万、数百万行になると検索にかかる時間は急激に増えていきます。
+        <br>
+        &emsp;この問題を解決するための仕組みが<span class="point">インデックス(INDEX)</span>です。インデックスとは、<span class="point">テーブルとは別に作られている「検索専用の目次」</span>のようなものです。テーブルのデータを並び替えるのではなく、カラムの値やその値が存在する行の位置だけを抜き出し、検索しやすい形で管理しています。本の巻末にある索引を使えば、目的の単語が載っているページを一瞬で特定できるように、インデックスをつかえば<span class="point">データベースは必要な行だけを直接読み取りに行く</span>ことができます。
+    </p>
+    <h2 id="3.1">3.1 &nbsp; インデックスの作成</h2>
+    <p>
+        &emsp;例えば先ほどの<code class="point">Alice</code>という名前のキャラクターを探すSQLですが、<code class="code">name</code>列にインデックスを作成することで、検索を高速化できます。
+    </p>
+    <div class="code-container">
+    <div class="code-header">
+        <span class="filename">インデックス作成</span>
+        <button class="copy-btn"  onclick="copySQL(this)">Copy</button>
+    </div>
+<pre class="code-block line-numbers"><code class="language-sql">CREATE INDEX idx_characters_name
+ON x_characters(name);
+
+</code></pre>
+</div>
+<p>
+    &emsp;この状態で先ほどの検索SQLを実行すると、データベースはインデックスを参照して<code class="point">Alice</code>が存在する行を特定し、その行だけを読み取りに行くため、処理が高速化されます。
+</p>
+    <h2 id="3.2">3.2 &nbsp; インデックスの利用場面</h2>
+    <p>
+        &emsp;インデックスは次のような処理で特に効果を発揮します。
+        <ul>
+            <li>大規模なテーブル</li>
+            <li>カーディナリティの高いカラム</li>
+            <li><code>WHERE</code>句で条件指定されるカラム</li>
+            <li><code>JOIN</code>句で結合条件に指定されるカラム</li>
+        </ul>
+        &emsp;例えば<code class="code">x_guild_characters</code>と<code class="code">x_characters</code>を結合する下記のSQLがあった際に、<code class="code">character_id</code>や<code class="code">guild_id</code>にインデックスがあれば、結合相手を探す処理が大幅に高速化されます。
+    </p>
+    <div class="code-container">
+    <div class="code-header">
+        <span class="filename">結合処理</span>
+        <button class="copy-btn"  onclick="copySQL(this)">Copy</button>
+    </div>
+<pre class="code-block line-numbers"><code class="language-sql">SELECT
+  c.name,
+  g.name
+FROM
+  x_guild_characters gc
+  INNER JOIN x_characters c
+    ON gc.character_id = c.character_id
+  INNER JOIN x_guilds g
+    ON gc.guild_id = g.guild_id;
+</code></pre>
+</div>
+<br>
+    <div class="hint">
+        <h3 style="color: #665201;">インデックスの注意点</h3>
+            <p>
+                &emsp;ここで注意すべき点があります。インデックスは便利ですが、作れば作るほど良いものではありません。インデックスが存在すると、データの追加、削除、更新を行うたびにインデックス側の情報も同時に更新する必要があります。つまり、<span class="point">検索は早くなるが、書き込みは少し重くなる</span>というトレードオフがあります。例えば、キャラクターが頻繁に追加・更新されるテーブルに必要以上のインデックスを作成すると、全体の処理速度が落ちる原因にもなります。
+            </p>
+        </div>
+    </div>
+
+    <div>
+        <h2><i class="fa-solid fa-square-check"></i> &nbsp; 定着確認</h2>
+        <ul>
+            <li>
+                テーブルの先頭行から順番にすべての行を確認しながら検索する処理方法を何というか。
+                <br>
+                <span id="test"><input type="checkbox" id="blank1"><label for="blank1">フルテーブルスキャン</label></span>
+            </li>
+            <li>
+                gender（男・女のみ）のような列にインデックスは有効か。理由も答えよ。
+                <br>
+                <span id="test"><input type="checkbox" id="blank2"><label for="blank2">有効性が低い（カーディナリティが低いため）</label></span>
+            </li>
+            <li>
+                次のうち、インデックスの効果が最も高い列はどれか。理由も述べよ。
+                <ul>
+                    <li>gender(男・女のみ)</li>
+                    <li>character_id（ユニーク）</li>
+                    <li>job_type（5種類）</li>
+                </ul>
+                <span id="test"><input type="checkbox" id="blank3"><label for="blank3">character_id。値が一意であり、1件に特定できるため選択性が高い。</label></span>
+            </li>
+            <li>
+                カーディナリティが低い列にインデックスが不向きな理由を説明せよ。
+                <br>
+                <span id="test"><input type="checkbox" id="blank4"><label for="blank4">条件で絞り込んでも大量の行が該当し、結局多くの行を読み込む必要があるため、効果が小さい。</label></span>
+            </li>
+        </ul>
+    </div>
+</section>
+<section id="4th">
+<h1><i class="fa-solid fa-database"></i>&ensp;4 &nbsp; B-treeと探索コスト</h1>
+<p>
+    &emsp;インデックスが高速な理由は、「データ構造」と「探索アルゴリズム」にあります。多くのRDBMS（PostSQL/MySQL/Oracleなど）では、<span class="point">B-tree(Balanced Tree)</span>というデータ構造が標準的に使われています。
+</p>
+<h2 id="4-1">4.1 &nbsp; B-treeとは</h2>
+<p>
+    &emsp;B-treeとは、<span class="point">各ノードが複数のキーをもち、常に期の高さがほぼ一定に保たれる平衡木構造</span>です。
+    <br>
+    &emsp;まず、B-treeは<span class="point">平衡木（Balanced Tree）</span>と呼ばれています。これは、どのデータを探す場合でも、<span class="point">木の一番上から一番下まで進む距離がほぼ同じになるように保たれている</span>というイメージです。そのため、たまたま特定のデータを探すのに時間がかかる、ということが起きません。またB-treeは<span class="point">多分木</span>です。これは、、1つの分岐点で「右か左か」の2択ではなく、<span class="point">複数の範囲に一度に振り分けることができる構造を持っている</span>いめーじです。このおかげで、木の高さを抑えることができ、探索回数が減ります。
+    <br>
+    &emsp;さらに、B-treeの中では<span class="point">キー（値）が常に昇順で並んで管理</span>されています。そのため、探索時にはある程度の範囲の絞りこんでから次のノードに進むことができます。
+</p>
+<h2 id="4-2">4.2 &nbsp; B-treeによる探索の仕組み</h2>
+<p>&emsp;<code class="code">x_characters</code>テーブルにつぎのようなインデックスを作成します。</p>
+<div class="code-container">
+    <div class="code-header">
+        <span class="filename">インデックス作成</span>
+        <button class="copy-btn"  onclick="copySQL(this)">Copy</button>
+    </div>
+<pre class="code-block line-numbers"><code class="language-sql">CREATE INDEX idx_characters_level
+ON x_characters(level);
+</code></pre>
+</div>
+<p>
+    &emsp;このインデックスではキーに<code class="code">level</code>、値に該当行へのポインタがB-treeに格納されます。この時<code class="code">level</code>が<code class="point">61</code>であるキャラクターを探すSQL実行します。
+</p>
+<div class="code-container">
+    <div class="code-header">
+        <span class="filename">levelが61のキャラクターを検索</span>
+        <button class="copy-btn"  onclick="copySQL(this)">Copy</button>
+    </div>
+<pre class="code-block line-numbers"><code class="language-sql">SELECT
+  name, level
+FROM
+  x_characters
+WHERE
+  level = 61;
+</code></pre>
+</div>
+<p>するとB-treeの探索が以下の手順で進みます。</p>
+<img style="width: 100%;" src="img/B-tree.jpg" alt="B-treeの手順">
+<p>
+    ここで登場するのが<span class="point">探索コスト</span>という考え方です。
+</p>
+<h2 id="4.3">4.3 &nbsp; 探索コストの計算</h2>
+<p>
+    &emsp;アルゴリズムとデータ構造でも学びましたが、データベースでいう<span class="point">探索コスト</span>とは、<span class="point">目的のデータを見つけるまでに、どれだけ手間がかかるか</span>を表す考え方です。ここでいう手間とは、「この行か？違うな」と確認した回数や、ディスクやメモリからデータを読み込んだ回数のことを指します。
+    <br>
+    &emsp;例えばフルテーブルスキャンでは、インデックスを使わずに先頭から順番に比較していくため、最悪の場合はすべてのデータを確認します。この方法では、<span class="point">データが増えるほど確認する行も増えていくため、データが多いほど、時間がかかるという特徴があります</span>。テーブルの列数（データ数）を $n$ として表すと、
+<span class="formula">
+    \[
+探索コスト = O(n)
+\]
+</span>
+        と表すことができます。一方で、B-treeインデックスを用いると1回の比較で検索範囲を大きく絞り込めるため、探索回数は木の高さに依存します。ここでB-treeの高さ $h$ は、
+<span class="formula">
+\[
+h \approx \log_b n
+\]
+</span>
+        と表されるため、探索コストは、
+<span class="formula">
+\[
+探索コスト = O(\log n)
+\]
+</span>
+        となります。この探索コストを100万件のデータで比較してみると、フルテーブルスキャンの場合は
+        <span class="formula">
+\[
+探索コスト = O(1000000) = 1000000
+\]
+        </span>
+        となりますが、B-treeインデックスを用いると、
+        <span class="formula">
+\[
+探索コスト = O(\log 1000000) \approx O(20)
+\]
+        </span>
+        と表すことができ、圧倒的に少ない回数で目的のデータを見つけることができます。つまり $n$ が大きくなるほど、$O(n)$ と $O(\log n)$ の差はさらに大きくなることがわかります。
+</p>
+<h2 id="4.4">4.4 &nbsp; 非SARGable（Search Argument Able）</h2>
+<p>
+    &emsp; ここまでインデックスのメリットを説明してきましたが、例えば下記のようなSQLを実行するとします。
+<div class="code-container">
+    <div class="code-header">
+        <span class="filename">level+1が61のキャラクターを検索</span>
+        <button class="copy-btn"  onclick="copySQL(this)">Copy</button>
+    </div>
+<pre class="code-block line-numbers"><code class="language-sql">SELECT *
+FROM x_characters
+WHERE level + 1 = 61;
+</code></pre>
+</div>
+        <br>
+        &emsp;このコードは、<code class="code">level</code>に1を足した値が61になる（つまり<code class="code">level</code>が60になる）行を検索しています。これは一見すると、インデックスを使用できそうですが、実際には使用できません。インデックスは「加工前の値」でソートされています。内部的には、全ての行を計算してから比較するため、B-treeの順序性を利用することができず、結局フルテーブルスキャンになってしまいます。一般的にこの現象は、<span class="point">関数適用により索引が無効化される（Index invalidation by function application）</span>と表現され、こういった条件を<span class="point">非SARGable（Search Argument Able）</span>と呼び、<span class="point">インデックスを有効に活用するためには、検索条件がSARGableであること</span>に注意する必要があります。
+        <br>
+        &emsp;このようにINDEX設計では、インデックスのメリットを最大限に活かすために、SQLの書き方や条件指定の方法にも注意が必要になります。
+</p>
+<div>
+    <h2><i class="fa-solid fa-square-check"></i>&nbsp;定着確認</h2>
+    <ul>
+        <li>
+            B-treeが多分木であることのメリットは何か。
+            <br>
+            <span id="test"><input type="checkbox" id="blank5"><label for="blank5">1回の分岐で複数の範囲に分けられるため、木の高さを低く抑えられ、探索回数が少なくなる。</label></span>
+        </li>
+        <li>    
+            B-tree内のキーはどのような順序で管理されているか。
+            <br>
+            <span id="test"><input type="checkbox" id="blank6"><label for="blank6">昇順</label></span>
+        </li>
+        <li>    
+            目的のデータを見つけるまでに必要な比較回数やI/O回数を何というか。
+            <br>
+            <span id="test"><input type="checkbox" id="blank7"><label for="blank7">探索コスト</label></span>
+        </li>
+        <li>    
+            非SARGable条件とは何か、具体例を挙げて説明せよ。
+            <br>
+            <span id="test"><input type="checkbox" id="blank8"><label for="blank8">インデックスを利用できない検索条件のこと。例：WHERE level + 1 = 61。</label></span>
+        </li>
+        <li>    
+            インデックスが存在してもフルスキャンが選ばれることがある理由を1つ述べよ。
+            <br>
+            <span id="test"><input type="checkbox" id="blank9"><label for="blank9">該当件数が非常に多い場合、インデックスよりフルスキャンの方が効率的と判断されることがある。</label></span>
+        </li>
+    </ul>
+</div>
+</section>
+
+<script src="script.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<p>本コンテンツの作成時間：20.2時間</p>
+</body>
+</html>
