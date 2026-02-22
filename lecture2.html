@@ -52,6 +52,7 @@
                         <li><a href="#4.2">4.2 B-treeによる探索の仕組み</a></li>
                         <li><a href="#4.3">4.3 探索コストの計算</a></li>
                         <li><a href="#4.4">4.4 非SARGable(Search Argument Able)</a></li>
+                        <li><a href="#4.5">4.5 処理時間の計測</a></li>
                     </ul>
                 </li>
             </ul>
@@ -97,7 +98,7 @@
             <div>
                 <p>&emsp;次の手順でSQL演習環境の立ち上げを行ってください。</p>
                 <a href="https://takeshiwada1980.github.io/DB-2025/lecture04.html#sql演習環境の動作確認-前回復習">SQL演習環境の動作確認</a>@ 第04回講義
-                <p>&emsp;また、<a href="https://takeshiwada1980.github.io/DB-2025/lecture10.html#準備"> 第10回講義で使用したテーブル群 (x_****)</a> も使用します。演習環境の<code class="code">from-teacher/10/create-x_db.sql</code> および <code class="code">insert-x_db_01.sql </code>を再実行し、次のテーブル群を初期化しておいてください。</p>
+                <p>&emsp;今回の講義では<a href="https://takeshiwada1980.github.io/DB-2025/lecture10.html#準備"> 第10回講義で使用したテーブル群 (x_****)</a> も使用します。演習環境の<code class="code">from-teacher/10/create-x_db.sql</code> および <code class="code">insert-x_db_01.sql </code>を再実行し、次のテーブル群を初期化しておいてください。</p>
                 <ul>
                     <li>x_items</li>
                     <li>x_jobs</li>
@@ -108,6 +109,9 @@
                     <li>x_gold_transfers</li>
                 </ul>
                 <img style="width: 90%;" src="img/er.png" alt="ER図">
+            </div>
+            <div>
+                <p>&emsp;また<a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/init-a_db.sql">sql/2/init-a_db.dql</a>で作成するテーブルを使用します。あらかじめ実行して以下のテーブル群（<code class="code">a_****</code> ）を作成しておいてください。</p>
             </div>
         </div>
 </section>
@@ -218,6 +222,76 @@ FROM
             </li>
         </ul>
     </div>
+    <div>
+        <h2><i class="fa-solid fa-graduation-cap"></i>&ensp;SQLドリル</h2>
+        <p>以下<code class="code">a_****</code>テーブル群を使用する問題です。</p>
+        <ul>
+            <li>
+                <code class="code">ex-01_1.sql</code>👉あなたはとあるゲームを作成している。ユーザーがログインをする際にメールアドレスでユーザーを検証するため、次のようなSQLを記述した。
+                <br>
+                <br>
+<div class="code-container">
+    <div class="code-header">
+        <span class="filename">メールアドレス検索SQL</span>
+        <button class="copy-btn" onclick="copySQL(this)">Copy</button>
+    </div>
+<pre class="code-block line-numbers"><code class="language-sql">SELECT *
+FROM a_characters
+WHERE email = 'user50000@example.com';</code></pre>
+</div>
+                <br>                
+                しかし、ユーザー数は10万件を超えており、処理が遅いという問題が発生している。どのようなインデックスを作成すればよいか。理由も説明すること。
+                <br>
+                <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-01_1.sql">模範解答</a>
+            </li>
+            <br>
+            <li>
+                <code class="code">ex-01_2.sql</code>👉あなたはとあるゲームのランキングシステムの開発をしている。ランキング画面は毎回リアルタイムで値を取得し、上位100名の名前とレベルを表示させたい。またアクセスが集中する時間に、遅延が発生しないようなシステムにしたいと考えています。必要なデータを取り出すためのSQLを記述し、そのSQLを高速化してください。
+                <br>
+                <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-01_2.sql">模範解答</a>
+            </li>
+            <br>
+            <li>
+                <code class="code">ex-01_3.sql</code>SSRアイテム保有者にメール配信を行うが抽出処理が遅く、夜間バッチが終わらない。
+                <br>
+                <br>
+                <div class="code-container">
+    <div class="code-header">
+        <span class="filename">SSR保有者メール取得SQL</span>
+        <button class="copy-btn" onclick="copySQL(this)">Copy</button>
+    </div>
+<pre class="code-block line-numbers"><code class="language-sql">SELECT DISTINCT c.email
+FROM a_characters c
+JOIN a_character_items ci ON c.character_id = ci.character_id
+JOIN a_items i ON ci.item_id = i.item_id
+WHERE i.rarity = 'SSR';</code></pre>
+</div>
+                <br>
+                どのようなインデックスを作成すればよいか。理由も説明すること。
+                <br>
+                <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-01_3.sql">模範解答</a>
+            </li>
+            <br>
+            <li>
+                直近7日間の新規登録ユーザーを取得するAPIがある。最近データが増えて遅くなった。
+                <br>
+                <br>
+                                <div class="code-container">
+    <div class="code-header">
+        <span class="filename">新規登録ユーザー取得SQL</span>
+        <button class="copy-btn" onclick="copySQL(this)">Copy</button>
+    </div>
+<pre class="code-block line-numbers"><code class="language-sql">SELECT *
+FROM a_characters
+WHERE created_at >= NOW() - INTERVAL '7 days';</code></pre>
+</div>
+                <br>
+                どのようなインデックスを作成すればよいか。理由も説明すること。
+                <br>
+                <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-01_4.sql">模範解答</a>
+            </li>
+        </ul>
+    </div>
 </section>
 <section id="4th">
 <h1><i class="fa-solid fa-database"></i>&ensp;4 &nbsp; B-treeと探索コスト</h1>
@@ -318,6 +392,73 @@ WHERE level + 1 = 61;
         <br>
         &emsp;このようにINDEX設計では、インデックスのメリットを最大限に活かすために、SQLの書き方や条件指定の方法にも注意が必要になります。
 </p>
+
+<h2 id="4.5">4.5 &nbsp; 処理時間の計測</h2>
+<p>
+    &emsp;ここからはa_charactersテーブルを用いて、インデックスの有無やSQLの書き方による処理時間の違いを確認します。まずは10万件のデータが入ったa_charactersテーブルに対して、<code class="code">level</code>が<code class="point">50</code>である行を検索するSQLの実行時間を計測してみましょう。
+</p>
+<div id="code1" class="code-container">
+    <div class="code-header">
+        <span class="filename">levelが50のキャラクターを検索</span>
+        <button class="copy-btn" onclick="copySQL(this)">Copy</button>
+    </div>
+<pre class="code-block line-numbers"><code class="language-sql">EXPLAIN ANALYZE
+SELECT *
+FROM a_characters
+WHERE level = 50;</code></pre>
+</div>
+<p>&emsp;実行時間を計測したいときは、<code class="code">EXPLAIN ANALYZE</code> を使用します。<span class="point"><code class="code">EXPLAIN</code> はSQLの実行計画を表示し、<code class="code">ANALYZE</code> は実際に実行してその処理時間を計測</span>します。実際に上記のコードを実行すると以下のような出力が得られます。</p>
+<div class="output-container">
+  <div class="output-header">出力結果</div>
+  <pre class="output-block">                                           QUERY PLAN
+------------------------------------------------------------------------------------------------------------------
+ Seq Scan on a_characters  (cost=0.00..2387.00 rows=1003 width=62) (actual time=0.682..182.210 rows=1013 loops=1)
+   Filter: (level = 50)
+   Rows Removed by Filter: 98987
+ Planning Time: 0.830 ms
+ Execution Time: 182.640 ms
+(5 行)</pre>
+  </div>
+  <p>&emsp;まず<code class="code">Seq Scan</code>は、テーブル全体を順番にスキャンすることを意味します。そして<code class="code">Execution Time</code>が処理時間を指し、<code class="code">Rows Removed by Filter</code>はフィルタリングによって除外された行数を示しています。ここで<code class="code">level</code>の列にインデックスを作成し、再度実行してみましょう。</p>
+<div class="code-container">
+    <div class="code-header">
+        <span class="filename">インデックス作成</span>
+        <button class="copy-btn" onclick="copySQL(this)">Copy</button>
+    </div>
+<pre class="code-block line-numbers"><code class="language-sql">CREATE INDEX idx_a_characters_level
+ON a_characters(level);</code></pre>
+</div>
+<p>&emsp;インデックスを作成した後、<a href="#code1">同じSQL</a> を再度実行すると、以下のような出力が得られます。</p>
+<div class="output-container">
+  <div class="output-header">出力結果</div>
+  <pre class="output-block">                                           QUERY PLAN
+------------------------------------------------------------------------------------------------------------------
+  Bitmap Heap Scan on a_characters  (cost=12.07..1175.45 rows=1003 width=62) (actual time=1.388..2.974 rows=1013 loops=1)
+   Recheck Cond: (level = 50)
+   Heap Blocks: exact=674
+   ->  Bitmap Index Scan on idx_a_characters_level  (cost=0.00..11.82 rows=1003 width=0) (actual time=1.280..1.281 rows=1013 loops=1)       
+         Index Cond: (level = 50)
+ Planning Time: 1.632 ms
+ Execution Time: 3.129 ms
+(7 行)</pre>
+  </div>
+  <p>
+    &emsp;ここでは、<code class="code">level</code>列にインデックスを作成した後に <code class="code">EXPLAIN ANALYZE</code> を実行した結果を示しています。
+
+まず<code class="code">Bitmap Index Scan</code>は、作成したインデックス（<code class="code">idx_a_characters_level</code>）を利用して、<code class="code">level = 50</code>に該当する行の位置をインデックス上から取得していることを意味します。インデックスはB-tree構造で管理されており、条件に一致する値を効率よく探索することができます。この段階では、実際のテーブルデータではなく、インデックスのみを参照しています。
+<br>
+&emsp;次に<code class="code">Bitmap Heap Scan</code> は、インデックスから取得した行の位置情報をもとに、実際のテーブル（ヒープ領域）から該当データを読み込む処理を示しています。<span class="point">Bitmap方式では、まず一致する行番号をまとめて収集し、その後まとめてデータ本体を読み込むため、ランダムアクセスを減らし効率的にデータを取得</span> できます。
+<br>
+&emsp;<code class="code">Recheck Cond</code> は、ヒープから読み込んだデータが本当に条件（<code class="code">level = 50</code>）を満たしているかを再確認していることを示します。
+<br>
+&emsp;<code class="code">Heap Blocks: exact=674</code> は、実際に読み込んだデータブロックの数を表しています。これはテーブル全体ではなく、<span class="point">該当する部分のみを読み込んでいること</span> を意味します。
+<br>
+&emsp;<code class="code">Actual time</code> は実際に処理にかかった時間を示し、<code class="code">Execution Time: 3.129 ms</code> がクエリ全体の実行時間を表しています。
+
+インデックスなしの場合は<code class="code">Seq Scan</code>によりテーブル全体を走査していましたが、インデックス作成後はインデックスを利用することで、<span class="point">必要なデータのみを効率的に取得している</span> ことが分かります。このように、インデックスを適切に作成することで検索性能が向上することが確認できます。
+  </p>
+  </div>
+
 <div>
     <h2><i class="fa-solid fa-square-check"></i>&nbsp;定着確認</h2>
     <ul>
@@ -345,6 +486,33 @@ WHERE level + 1 = 61;
             インデックスが存在してもフルスキャンが選ばれることがある理由を1つ述べよ。
             <br>
             <span id="test"><input type="checkbox" id="blank9"><label for="blank9">該当件数が非常に多い場合、インデックスよりフルスキャンの方が効率的と判断されることがある。</label></span>
+        </li>
+    </ul>
+</div>
+<div>
+    <h2><i class="fa-solid fa-graduation-cap"></i>&ensp;SQLドリル</h2>
+    <ul>
+        <li>
+            <code class="code">ex-02_1.sql</code>👉<code class="code">job_id</code>のインデックスを作成するSQLを記述せよ。
+            <br>
+            <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-02_1.sql">模範解答</a>
+        </li>
+        <br>
+        <li>
+            <code class="code">ex-02_2.sql</code>👉「<code class="code">job_id = 3</code>かつ<code class="code">level >= 70</code>」のキャラクターを検索せよ。また単一インデックスと複合インデックスの違いを比較せよ。
+            <br>
+            <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-02_2.sql">模範解答</a>
+        </li>
+        <br>
+        <li>
+            <code class="code">ex-02_3.sql</code>👉レベル順でソートして上位100件を取得せよ。またインデックスでソートが高速化されるか確認せよ。
+            <br>
+            <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-02_3.sql">模範解答</a>
+        </li>
+        <li>
+            <code class="code">ex-02_4.sql</code>👉SSRアイテムを持つキャラクターを取得し、<code class="code">a_character_items</code> にインデックスを作成して比較せよ。
+            <br>
+            <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-02_4.sql">模範解答</a>
         </li>
     </ul>
 </div>
