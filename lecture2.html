@@ -111,7 +111,17 @@
                 <img style="width: 90%;" src="img/er.png" alt="ER図">
             </div>
             <div>
-                <p>&emsp;また<a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/init-a_db.sql">sql/2/init-a_db.dql</a>で作成するテーブルを使用します。あらかじめ実行して以下のテーブル群（<code class="code">a_****</code> ）を作成しておいてください。</p>
+                <p>
+                    &emsp;また<a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/init-a_db.sql">sql/2/init-a_db.dql</a>で作成するテーブルを使用します。あらかじめ実行して以下のテーブル群（<code class="code">a_****</code> ）を作成しておいてください。
+                    <ul>
+                        <li>a_characters</li>
+                        <li>a_guilds</li>
+                        <li>a_items</li>
+                        <li>a_character_items</li>
+                        <li>a_jobs</li>
+                    </ul>
+                    <img style="width: 90%;" src="img/a_er.png" alt="AテーブルのER図">
+                </p>
             </div>
         </div>
 </section>
@@ -226,7 +236,7 @@ FROM
         <h2><i class="fa-solid fa-graduation-cap"></i>&ensp;SQLドリル</h2>
         <p>以下<code class="code">a_****</code>テーブル群を使用する問題です。</p>
         <ul>
-            <li>
+            <li class="drill">
                 <code class="code">ex-01_1.sql</code>👉あなたはとあるゲームを作成している。ユーザーがログインをする際にメールアドレスでユーザーを検証するため、次のようなSQLを記述した。
                 <br>
                 <br>
@@ -245,13 +255,13 @@ WHERE email = 'user50000@example.com';</code></pre>
                 <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-01_1.sql">模範解答</a>
             </li>
             <br>
-            <li>
+            <li class="drill">
                 <code class="code">ex-01_2.sql</code>👉あなたはとあるゲームのランキングシステムの開発をしている。ランキング画面は毎回リアルタイムで値を取得し、上位100名の名前とレベルを表示させたい。またアクセスが集中する時間に、遅延が発生しないようなシステムにしたいと考えています。必要なデータを取り出すためのSQLを記述し、そのSQLを高速化してください。
                 <br>
                 <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-01_2.sql">模範解答</a>
             </li>
             <br>
-            <li>
+            <li class="drill">
                 <code class="code">ex-01_3.sql</code>SSRアイテム保有者にメール配信を行うが抽出処理が遅く、夜間バッチが終わらない。
                 <br>
                 <br>
@@ -272,7 +282,7 @@ WHERE i.rarity = 'SSR';</code></pre>
                 <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-01_3.sql">模範解答</a>
             </li>
             <br>
-            <li>
+            <li class="drill">
                 直近7日間の新規登録ユーザーを取得するAPIがある。最近データが増えて遅くなった。
                 <br>
                 <br>
@@ -302,7 +312,7 @@ WHERE created_at >= NOW() - INTERVAL '7 days';</code></pre>
 <p>
     &emsp;B-treeとは、<span class="point">各ノードが複数のキーをもち、常に期の高さがほぼ一定に保たれる平衡木構造</span>です。
     <br>
-    &emsp;まず、B-treeは<span class="point">平衡木（Balanced Tree）</span>と呼ばれています。これは、どのデータを探す場合でも、<span class="point">木の一番上から一番下まで進む距離がほぼ同じになるように保たれている</span>というイメージです。そのため、たまたま特定のデータを探すのに時間がかかる、ということが起きません。またB-treeは<span class="point">多分木</span>です。これは、、1つの分岐点で「右か左か」の2択ではなく、<span class="point">複数の範囲に一度に振り分けることができる構造を持っている</span>いめーじです。このおかげで、木の高さを抑えることができ、探索回数が減ります。
+    &emsp;まず、B-treeは<span class="point">平衡木（Balanced Tree）</span>と呼ばれています。これは、どのデータを探す場合でも、<span class="point">木の一番上から一番下まで進む距離がほぼ同じになるように保たれている</span>というイメージです。そのため、たまたま特定のデータを探すのに時間がかかる、ということが起きません。またB-treeは<span class="point">多分木</span>です。これは、1つの分岐点で「右か左か」の2択ではなく、<span class="point">複数の範囲に一度に振り分けることができる構造を持っている</span>いめーじです。このおかげで、木の高さを抑えることができ、探索回数が減ります。
     <br>
     &emsp;さらに、B-treeの中では<span class="point">キー（値）が常に昇順で並んで管理</span>されています。そのため、探索時にはある程度の範囲の絞りこんでから次のノードに進むことができます。
 </p>
@@ -492,24 +502,24 @@ ON a_characters(level);</code></pre>
 <div>
     <h2><i class="fa-solid fa-graduation-cap"></i>&ensp;SQLドリル</h2>
     <ul>
-        <li>
+        <li class="drill">
             <code class="code">ex-02_1.sql</code>👉<code class="code">job_id</code>のインデックスを作成するSQLを記述せよ。
             <br>
             <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-02_1.sql">模範解答</a>
         </li>
         <br>
-        <li>
+        <li class="drill">
             <code class="code">ex-02_2.sql</code>👉「<code class="code">job_id = 3</code>かつ<code class="code">level >= 70</code>」のキャラクターを検索せよ。また単一インデックスと複合インデックスの違いを比較せよ。
             <br>
             <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-02_2.sql">模範解答</a>
         </li>
         <br>
-        <li>
+        <li class="drill">
             <code class="code">ex-02_3.sql</code>👉レベル順でソートして上位100件を取得せよ。またインデックスでソートが高速化されるか確認せよ。
             <br>
             <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-02_3.sql">模範解答</a>
         </li>
-        <li>
+        <li class="drill">
             <code class="code">ex-02_4.sql</code>👉SSRアイテムを持つキャラクターを取得し、<code class="code">a_character_items</code> にインデックスを作成して比較せよ。
             <br>
             <a href="https://github.com/s-ao213/DB2026_lecture/blob/main/sql/2/ex-02_4.sql">模範解答</a>
